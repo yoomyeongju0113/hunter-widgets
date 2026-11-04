@@ -204,6 +204,25 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
 .prog .bar { height: 10px; border-radius: 999px; background: rgba(255,255,255,.08); overflow: hidden; box-shadow: inset 0 0 0 1px rgba(127,211,255,.25); }
 .prog .bar i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #4aa8e8, var(--volt)); box-shadow: 0 0 10px rgba(127,211,255,.7); }
 .prog .bar.p i { background: linear-gradient(90deg, #b03f7c, var(--magenta)); box-shadow: 0 0 10px rgba(217,74,146,.6); }
+/* 헌터 레벨 */
+.lvl .lvtop { display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; }
+.lvl .lvnum { font-size: .9rem; color: var(--mist); }
+.lvl .lvnum b { font-size: 2rem; font-weight: 700; color: var(--volt-hot); margin-left: 2px; text-shadow: 0 0 10px rgba(127,211,255,.7); font-variant-numeric: tabular-nums; }
+.lvl .goals { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 6px; }
+.lvl .goals li { display: grid; grid-template-columns: 26px 1fr auto 20px; gap: 8px; align-items: center; padding: 7px 8px; border-radius: 10px; background: rgba(255,255,255,.05); font-size: .88rem; min-width: 0; }
+.lvl .goals li .tx { min-width: 0; overflow-wrap: anywhere; color: var(--silver); }
+.lvl .goals li.done .tx { color: var(--mist); text-decoration: line-through; }
+.lvl .goals li .xp { font-size: .72rem; color: var(--volt); font-variant-numeric: tabular-nums; }
+.lvl .ck { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid rgba(127,211,255,.6); background: transparent; color: var(--volt); cursor: pointer; padding: 0; font-size: 12px; }
+.lvl li.done .ck { background: var(--volt); color: var(--ink); }
+.lvl .goals .x { color: var(--mist); }
+.lvl .goals .empty { display: block; text-align: center; color: var(--mist); font-size: .8rem; background: none; }
+.lvl form { display: grid; grid-template-columns: 1fr auto; gap: 6px; margin-top: 10px; }
+.lvl form input { grid-column: 1 / -1; min-width: 0; border-radius: 10px; border: 1.5px solid rgba(127,211,255,.4); background: rgba(0,0,0,.25); color: var(--silver); padding: 7px 9px; font-size: .85rem; }
+.lvl .sz { display: inline-flex; gap: 4px; padding: 3px; border-radius: 999px; background: rgba(255,255,255,.06); }
+.lvl .sz button { border: 0; border-radius: 999px; padding: 4px 10px; font-size: .76rem; background: transparent; color: var(--mist); cursor: pointer; }
+.lvl .sz button[aria-pressed="true"] { background: var(--volt); color: var(--ink); font-weight: 700; }
+.lvl .lvmsg { margin: 8px 0 0; text-align: center; font-size: .82rem; color: var(--gold); min-height: 1.2em; }
 /* 넨 타이머 */
 .timer { text-align: center; }
 .timer .modes { display: inline-flex; gap: 4px; margin-top: 10px; padding: 3px; border-radius: 999px; background: rgba(255,255,255,.06); }
@@ -328,9 +347,12 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
 </template>
 
 <template id="t-progress">
-  <section class="w panel" aria-label="진행 바">
-    <span class="eye">HUNTER LEVEL</span><h2 data-h></h2>
-    <div class="prog" data-p></div>
+  <section class="w panel lvl" aria-label="헌터 레벨">
+    <div class="lvtop"><div><span class="eye">HUNTER LEVEL</span><h2 data-rank></h2></div><div class="lvnum">Lv.<b data-lv>1</b></div></div>
+    <div class="prog"><div class="r"><div class="lab"><span>경험치</span><b data-xp></b></div><div class="bar"><i data-bar style="width:0%"></i></div></div></div>
+    <ul class="goals" data-list></ul>
+    <form data-f><input id="lv-goal" maxlength="30" placeholder="이룰 목표 (예: 자료구조 과제 제출)"><div class="sz"><button type="button" data-sz="10" aria-pressed="true">작은 +10</button><button type="button" data-sz="30" aria-pressed="false">큰 +30</button></div><button class="btn volt" type="submit">추가</button></form>
+    <p class="lvmsg" data-msg></p>
   </section>
 </template>
 <template id="t-timer">
@@ -644,17 +666,31 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
     render();
   }
 
-  /* 진행 바 */
+  /* 헌터 레벨: 목표를 이루면 경험치 */
+  const HRANKS = [[1, "견습 헌터"], [3, "프로 헌터"], [6, "싱글 스타 헌터 ★"], [10, "더블 스타 헌터 ★★"], [15, "트리플 스타 헌터 ★★★"]];
   function mountProgress(root) {
-    function render() {
-      const n = new Date(), y = n.getFullYear();
-      const ys = new Date(y, 0, 1), ye = new Date(y + 1, 0, 1), ms = new Date(y, n.getMonth(), 1), me = new Date(y, n.getMonth() + 1, 1), ds = new Date(y, n.getMonth(), n.getDate());
-      const pct = (a, b) => Math.min(100, Math.max(0, (n - a) / (b - a) * 100));
-      const rows = [["오늘 하루", pct(ds, new Date(ds.getTime() + 86400000)), ""], ["이번 달", pct(ms, me), ""], [`${y}년`, pct(ys, ye), "p"]];
-      root.querySelector("[data-h]").textContent = `${n.getMonth() + 1}월 ${n.getDate()}일 ${DAYS[n.getDay()]}요일`;
-      root.querySelector("[data-p]").innerHTML = rows.map(([l, v, c]) => `<div class="r"><div class="lab"><span>${l}</span><b>${v.toFixed(0)}%</b></div><div class="bar ${c}"><i style="width:${v.toFixed(1)}%"></i></div></div>`).join("");
+    const $ = s => root.querySelector(s), KEY = "hxh-level";
+    let st = store.get(KEY, { xp: 0, goals: [] }), size = 10;
+    const rankOf = lv => HRANKS.filter(r => lv >= r[0]).pop()[1];
+    function render(flash) {
+      const lv = Math.floor(st.xp / 100) + 1, cur = st.xp % 100;
+      $("[data-lv]").textContent = lv; $("[data-rank]").textContent = rankOf(lv);
+      $("[data-xp]").textContent = `${cur} / 100 XP`; $("[data-bar]").style.width = cur + "%";
+      const ul = $("[data-list]"); ul.innerHTML = "";
+      if (!st.goals.length) ul.innerHTML = '<li class="empty">목표를 적고 이루면 체크해요. 경험치가 쌓여요</li>';
+      st.goals.forEach((g, i) => {
+        const li = document.createElement("li"); if (g.d) li.className = "done";
+        li.innerHTML = `<button class="ck" type="button" aria-label="${g.d ? "다시 하기로" : "이뤘어요"}">${g.d ? "✓" : ""}</button><span class="tx"></span><span class="xp">+${g.x}</span><button class="x" type="button" aria-label="목표 지우기">×</button>`;
+        li.querySelector(".tx").textContent = g.t;
+        li.querySelector(".ck").onclick = () => { const before = Math.floor(st.xp / 100); g.d = !g.d; st.xp = Math.max(0, st.xp + (g.d ? g.x : -g.x)); store.set(KEY, st); render(g.d && Math.floor(st.xp / 100) > before); };
+        li.querySelector(".x").onclick = () => { st.goals.splice(i, 1); store.set(KEY, st); render(); };
+        ul.appendChild(li);
+      });
+      $("[data-msg]").textContent = flash ? `레벨 업! Lv.${lv} ${rankOf(lv)}` : `다음 레벨까지 ${100 - cur} XP`;
     }
-    render(); setInterval(render, 60000);
+    root.querySelectorAll("[data-sz]").forEach(b => b.onclick = () => { size = +b.dataset.sz; root.querySelectorAll("[data-sz]").forEach(x => x.setAttribute("aria-pressed", x === b)); });
+    $("[data-f]").onsubmit = e => { e.preventDefault(); const v = $("#lv-goal").value.trim(); if (!v) return; if (st.goals.length >= 8) st.goals = st.goals.filter(g => !g.d); st.goals.push({ t: v, x: size, d: false }); $("#lv-goal").value = ""; store.set(KEY, st); render(); };
+    render();
   }
   /* 넨 수련 타이머 */
   function mountTimer(root) {
@@ -909,7 +945,7 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
     Object.keys(SECTIONS).forEach(k => bl.appendChild(band(k)));
     bands.appendChild(bl); shelf.appendChild(bands);
     const two = document.createElement("div"); two.className = "two";
-    two.append(slot("키르아 시계", "clock", make("clock")), slot("히소카 메모장", "memo", make("memo")), slot("헌터 달력", "calendar", make("calendar")), slot("헌터 레벨 (진행 바)", "progress", make("progress")), slot("넨 수련 타이머", "timer", make("timer")), slot("시험 D-day", "dday", make("dday")), slot("제니 저금통", "piggy", make("piggy")));
+    two.append(slot("키르아 시계", "clock", make("clock")), slot("히소카 메모장", "memo", make("memo")), slot("헌터 달력", "calendar", make("calendar")), slot("헌터 레벨", "progress", make("progress")), slot("넨 수련 타이머", "timer", make("timer")), slot("시험 D-day", "dday", make("dday")), slot("제니 저금통", "piggy", make("piggy")));
     shelf.append(two, slot("올해 카드 컬렉션", "deck", make("deck")), slot("오늘의 문장", "quote", make("quote")));
     const d1 = document.createElement("div"); d1.className = "divbox"; d1.appendChild(suitsDivider());
     const d2 = document.createElement("div"); d2.className = "divbox"; d2.appendChild(boltDivider());
