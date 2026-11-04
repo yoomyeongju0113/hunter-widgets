@@ -208,7 +208,8 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
 .lvl .lvtop { display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; }
 .lvl .lvnum { font-size: .9rem; color: var(--mist); }
 .lvl .lvnum b { font-size: 2rem; font-weight: 700; color: var(--volt-hot); margin-left: 2px; text-shadow: 0 0 10px rgba(127,211,255,.7); font-variant-numeric: tabular-nums; }
-.lvl .goals { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 6px; }
+.lvl .qlab { margin-top: 14px; font-size: .66rem; letter-spacing: .3em; color: var(--mist); }
+.lvl .goals { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; }
 .lvl .goals li { display: grid; grid-template-columns: 26px 1fr auto 20px; gap: 8px; align-items: center; padding: 7px 8px; border-radius: 10px; background: rgba(255,255,255,.05); font-size: .88rem; min-width: 0; }
 .lvl .goals li .tx { min-width: 0; overflow-wrap: anywhere; color: var(--silver); }
 .lvl .goals li.done .tx { color: var(--mist); text-decoration: line-through; }
@@ -296,6 +297,32 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
 @keyframes flicker { 0%, 46%, 54%, 100% { opacity: 1 } 50% { opacity: .6 } }
 .flick { animation: flicker 3.4s infinite; }
 @media (prefers-reduced-motion: reduce) { .flick { animation: none; } .pc .face { transition: none; } }
+
+/* ── 노션 다크에 녹는 납작한 스타일 (레퍼런스 맞춤) ── */
+:root { --flat: #1f232b; --flat-line: #2c3340; --flat-soft: rgba(255,255,255,.04); }
+body.solo { padding: 0; place-items: stretch; }
+body.solo > main { width: 100%; }
+.w, .band, .hero { border: 1px solid var(--flat-line) !important; border-radius: 10px !important; box-shadow: none !important; }
+.clock, .panel, .cal, .quote, .deckw, .memo { background: var(--flat) !important; }
+.clock canvas { opacity: .35; }
+.clock .time { text-shadow: 0 0 8px rgba(127,211,255,.45) !important; }
+.dday { background: var(--flat-soft) !important; border-color: var(--flat-line) !important; box-shadow: none !important; }
+.memo { padding: 16px !important; }
+.memo .card { background: transparent !important; color: var(--silver) !important; box-shadow: none !important; padding: 0 !important; }
+.memo .ribbon { position: static !important; transform: none !important; background: none !important; border: 0 !important; padding: 0 !important; color: var(--mist) !important; font-size: .66rem !important; letter-spacing: .3em; font-weight: 400 !important; }
+.memo .count { color: var(--mist) !important; margin-top: -14px !important; }
+.memo li + li { border-top-color: var(--flat-line) !important; }
+.memo li.done .txt { color: #6f7a8f !important; }
+.memo .suit-btn { background: transparent !important; color: var(--volt) !important; border-color: rgba(127,211,255,.5) !important; }
+.memo li.done .suit-btn { background: var(--volt) !important; color: var(--ink) !important; }
+.memo input { background: var(--flat-soft) !important; border-color: var(--flat-line) !important; color: var(--silver) !important; }
+.btn { box-shadow: none !important; border-width: 1px !important; }
+.memo .btn { background: var(--volt) !important; color: var(--ink) !important; border-color: transparent !important; }
+.cal .d { background: var(--flat-soft); }
+.iconbtn { border-color: var(--flat-line) !important; }
+.deckw .score em, .deckw h2 { color: var(--silver) !important; }
+.pc .face { box-shadow: 0 0 0 1px rgba(0,0,0,.6) !important; }
+.prog .bar i { box-shadow: none !important; }
 </style>
 
 <main id="app"></main>
@@ -321,7 +348,7 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
 <template id="t-memo">
   <section class="w memo" aria-label="히소카 메모장">
     <div class="card">
-      <div class="ribbon">♠ 오늘 읽을 것 ♥</div>
+      <div class="ribbon">TODAY</div>
       <div class="count" data-count></div>
       <ul data-list></ul>
       <form data-form>
@@ -350,8 +377,9 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
   <section class="w panel lvl" aria-label="헌터 레벨">
     <div class="lvtop"><div><span class="eye">HUNTER LEVEL</span><h2 data-rank></h2></div><div class="lvnum">Lv.<b data-lv>1</b></div></div>
     <div class="prog"><div class="r"><div class="lab"><span>경험치</span><b data-xp></b></div><div class="bar"><i data-bar style="width:0%"></i></div></div></div>
+    <div class="qlab">TODAY'S QUEST</div>
     <ul class="goals" data-list></ul>
-    <form data-f><input id="lv-goal" maxlength="30" placeholder="이룰 목표 (예: 자료구조 과제 제출)"><div class="sz"><button type="button" data-sz="10" aria-pressed="true">작은 +10</button><button type="button" data-sz="30" aria-pressed="false">큰 +30</button></div><button class="btn volt" type="submit">추가</button></form>
+    <form data-f><input id="lv-goal" maxlength="30" placeholder="오늘의 퀘스트 (예: 자료구조 과제 제출)"><div class="sz"><button type="button" data-sz="10" aria-pressed="true">♣ 노멀 · 10XP</button><button type="button" data-sz="30" aria-pressed="false">♠ 보스 · 30XP</button></div><button class="btn volt" type="submit">추가</button></form>
     <p class="lvmsg" data-msg></p>
   </section>
 </template>
@@ -473,7 +501,7 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
       const together = Math.floor((today - new Date(...LOVE)) / 86400000) + 1;
       const nextHundred = Math.ceil((together + 1) / 100) * 100;
       const lv = root.querySelector("[data-love]");
-      if (together >= 1) lv.innerHTML = `<span class="h">♥</span> 우리 <b>${together}</b>일째 <span class="h">♥</span><small>${together % 100 === 0 ? together + "일 축하해!" : nextHundred + "일까지 " + (nextHundred - together) + "일"}</small>`;
+      if (together >= 1) lv.innerHTML = `<span class="h">♥</span> <b>${together}</b>일 <span class="h">♥</span>`;
     }
     tick(); setInterval(tick, 1000);
     $("[data-dedit]").onclick = () => {
@@ -677,10 +705,10 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
       $("[data-lv]").textContent = lv; $("[data-rank]").textContent = rankOf(lv);
       $("[data-xp]").textContent = `${cur} / 100 XP`; $("[data-bar]").style.width = cur + "%";
       const ul = $("[data-list]"); ul.innerHTML = "";
-      if (!st.goals.length) ul.innerHTML = '<li class="empty">목표를 적고 이루면 체크해요. 경험치가 쌓여요</li>';
+      if (!st.goals.length) ul.innerHTML = '<li class="empty">오늘 할 일을 퀘스트로 적고, 끝내면 체크해요</li>';
       st.goals.forEach((g, i) => {
         const li = document.createElement("li"); if (g.d) li.className = "done";
-        li.innerHTML = `<button class="ck" type="button" aria-label="${g.d ? "다시 하기로" : "이뤘어요"}">${g.d ? "✓" : ""}</button><span class="tx"></span><span class="xp">+${g.x}</span><button class="x" type="button" aria-label="목표 지우기">×</button>`;
+        li.innerHTML = `<button class="ck" type="button" aria-label="${g.d ? "다시 하기로" : "이뤘어요"}">${g.d ? "✓" : ""}</button><span class="tx"></span><span class="xp">${g.x === 30 ? "♠ 30XP" : "♣ 10XP"}</span><button class="x" type="button" aria-label="목표 지우기">×</button>`;
         li.querySelector(".tx").textContent = g.t;
         li.querySelector(".ck").onclick = () => { const before = Math.floor(st.xp / 100); g.d = !g.d; st.xp = Math.max(0, st.xp + (g.d ? g.x : -g.x)); store.set(KEY, st); render(g.d && Math.floor(st.xp / 100) > before); };
         li.querySelector(".x").onclick = () => { st.goals.splice(i, 1); store.set(KEY, st); render(); };
@@ -766,7 +794,7 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
   }
 
   /* 헌터 달력 */
-  const KINDS = [["일정", "♠", "k"], ["약속", "♥", ""], ["시험", "♦", ""], ["마감", "♣", ""]];
+  const KINDS = [["가족", "♥", ""], ["학교", "♠", "k"], ["공부", "♦", "k"], ["여가", "♣", ""]];
   function mountCalendar(root) {
     const $ = s => root.querySelector(s), KEY = "hxh-cal";
     let evs = store.get(KEY, {});
@@ -805,10 +833,10 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
       });
     }
     function openDay(k, d) {
-      let kind = "일정";
+      let kind = "학교";
       const sh = document.createElement("div"); sh.className = "sheet";
       sh.innerHTML = `<div class="box" role="dialog" aria-label="일정 넣기"><h3>${d.getMonth() + 1}월 ${d.getDate()}일</h3><div class="evs"></div>
-        <label class="field">일정<input type="text" id="cal-title" maxlength="30" placeholder="예: 자료구조 퀴즈"></label>
+        <label class="field">일정<input type="text" id="cal-title" maxlength="30" placeholder="예: 자료구조 퀴즈, 가족 저녁"></label>
         <div class="kinds">${KINDS.map(x => `<button type="button" data-k="${x[0]}" aria-pressed="${x[0] === kind}">${x[1]} ${x[0]}</button>`).join("")}</div>
         <div class="acts"><button class="btn ghost" type="button" data-x="close">닫기</button><button class="btn" type="button" data-x="add">넣기</button></div></div>`;
       const box = sh.querySelector(".evs"), t = sh.querySelector("#cal-title");
@@ -863,7 +891,7 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
   /* 타이틀 배너: 밤 숲, 흩날리는 카드, 번개 */
   function hero(title, sub) {
     const el = document.createElement("section"); el.className = "hero"; el.setAttribute("aria-label", title);
-    el.innerHTML = `<canvas></canvas><div class="t"><div class="suits">♠ <b>♥</b> <b>♦</b> ♣</div><h1>${title}</h1><div class="sub">${sub}</div></div>`;
+    el.innerHTML = `<canvas></canvas><div class="t"><div class="suits">♠ <b>♥</b> <b>♦</b> ♣</div><h1>${title}</h1>${sub ? `<div class="sub">${sub}</div>` : ""}</div>`;
     const cv = el.querySelector("canvas"), g = cv.getContext("2d");
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     let W = 0, H = 0, d = 1, stars = [], trees = [], cards = [], flash = 0;
@@ -923,9 +951,9 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
     const solo = cls => { document.body.className = "solo " + cls; document.documentElement.className = "solo-html"; };
     if (MOUNT[h]) { solo("solo-" + h); app.appendChild(make(h)); return; }
     if (h === "suits" || h === "bolt") { solo("solo-" + h); app.appendChild(h === "suits" ? suitsDivider() : boltDivider()); return; }
-    if (h === "hero") { solo("solo-hero"); app.appendChild(hero("HUNTER'S ROOM", "명주의 하루")); return; }
-    if (h === "hero-library") { solo("solo-hero"); app.appendChild(hero("HUNTER'S LIBRARY", "명주의 독서기록장")); return; }
-    if (h === "hero-study") { solo("solo-hero"); app.appendChild(hero("HUNTER EXAM", "명주의 공부방")); return; }
+    if (h === "hero") { solo("solo-hero"); app.appendChild(hero("HUNTER ASSOCIATION", "")); return; }
+    if (h === "hero-library") { solo("solo-hero"); app.appendChild(hero("HUNTER'S LIBRARY", "")); return; }
+    if (h === "hero-study") { solo("solo-hero"); app.appendChild(hero("HUNTER EXAM", "")); return; }
     if (SECTIONS[h]) { solo("solo-band"); app.appendChild(band(h)); return; }
     const shelf = document.createElement("div"); shelf.className = "shelf";
     shelf.innerHTML = `<header class="shelf-head"><p>노션 독서기록장에 붙이는 위젯이에요. 위젯 하나만 띄우려면 주소 끝에 꼬리표를 붙여서 노션에 임베드해요. 꼬리표를 누르면 복사돼요.</p></header>`;
@@ -938,7 +966,7 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
       };
       s.appendChild(el); return s;
     }
-    shelf.append(slot("타이틀 배너", "hero", hero("HUNTER'S ROOM", "명주의 하루")));
+    shelf.append(slot("타이틀 배너", "hero", hero("HUNTER ASSOCIATION", "")));
     const bands = document.createElement("div"); bands.className = "slot";
     bands.innerHTML = `<div class="slot-label"><b>섹션 배너</b><span>${Object.keys(SECTIONS).map(k => "#" + k).join(" · ")}</span></div>`;
     const bl = document.createElement("div"); bl.style.cssText = "display:grid;gap:12px";
