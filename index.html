@@ -33,10 +33,42 @@ body {
   padding-right: max(16px, env(safe-area-inset-right, 0px));
   padding-block: 20px;
 }
-button, input { font-family: inherit; }
-body.solo { padding-block: 10px; display: grid; place-items: center; }
-body.solo-clock, body.solo-quote { background: var(--navy-deep); }
-body.solo-suits, body.solo-bolt { background: #ffffff; padding-block: 4px; }
+button, input, textarea { font-family: inherit; }
+[hidden] { display: none !important; }
+img { max-width: 100%; }
+/* 노션 안에 하나만 띄울 때: 투명 바탕, 스크롤바 없음, 칸에 꽉 맞춤 */
+html.solo-html, html.solo-html body { overflow: hidden; scrollbar-width: none; }
+html.solo-html::-webkit-scrollbar, html.solo-html body::-webkit-scrollbar { display: none; }
+body.solo { background: transparent; padding: 3px 8px 8px 3px; display: grid; place-items: center; }
+body.solo .w { max-width: none; }
+body.solo-suits, body.solo-bolt { padding: 0 2px; }
+
+/* ── 섹션 배너 ── */
+.band { width: 100%; max-width: 780px; display: flex; align-items: center; gap: 14px; padding: 14px 18px; border: 2.5px solid var(--ink); border-radius: 16px; box-shadow: 4px 4px 0 var(--ink); position: relative; overflow: hidden; }
+.band.k { background: linear-gradient(100deg, var(--navy) 0%, var(--navy-deep) 100%); }
+.band.h { background: linear-gradient(100deg, var(--plum) 0%, var(--plum-deep) 100%); }
+.band .mark { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-size: 20px; border: 2px solid var(--ink); }
+.band.k .mark { background: rgba(127,211,255,.14); color: var(--volt); box-shadow: 0 0 12px rgba(127,211,255,.45); border-color: rgba(127,211,255,.6); }
+.band.h .mark { background: var(--magenta); color: #fff; }
+.band .txt { min-width: 0; display: grid; gap: 2px; }
+.band .eye { font-size: .66rem; letter-spacing: .28em; color: var(--mist); }
+.band.h .eye { color: var(--lilac); }
+.band h2 { margin: 0; font-weight: 700; font-size: 1.2rem; color: #fff; line-height: 1.25; }
+.band p { margin: 0; font-size: .84rem; color: #b9c3dd; overflow-wrap: anywhere; }
+.band.h p { color: #cdb9d9; }
+.band .deco { position: absolute; right: -6px; top: 50%; transform: translateY(-50%); font-size: 74px; line-height: 1; opacity: .12; color: #fff; pointer-events: none; }
+.band.k .deco { color: var(--volt); opacity: .22; }
+
+/* ── 타이틀 배너 ── */
+.hero { width: 100%; max-width: 780px; height: 210px; border: 2.5px solid var(--ink); border-radius: 22px; box-shadow: 5px 5px 0 var(--ink); position: relative; overflow: hidden;
+  background: linear-gradient(180deg, #120d22 0%, #2b1a42 52%, #1c2a4f 100%); display: grid; place-items: center; text-align: center; }
+.hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero .t { position: relative; display: grid; gap: 6px; padding: 0 16px; }
+.hero .suits { font-size: .9rem; letter-spacing: .6em; color: var(--lilac); padding-left: .6em; }
+.hero .suits b { color: var(--magenta); font-weight: 400; }
+.hero h1 { margin: 0; font-weight: 700; font-size: clamp(1.7rem, 6.4vw, 2.8rem); letter-spacing: .14em; color: var(--volt-hot); line-height: 1.1;
+  text-shadow: 0 0 8px rgba(127,211,255,.7), 0 0 26px rgba(127,211,255,.35), 3px 3px 0 var(--ink); text-wrap: balance; }
+.hero .sub { font-size: .95rem; color: var(--silver); letter-spacing: .08em; }
 
 .shelf { max-width: 780px; margin: 0 auto; display: grid; gap: 28px; }
 .shelf-head h1 { font-weight: 700; font-size: 1.6rem; margin: 0 0 6px; color: var(--lilac); text-wrap: balance; }
@@ -62,6 +94,10 @@ body.solo-suits, body.solo-bolt { background: #ffffff; padding-block: 4px; }
   text-shadow: 0 0 6px var(--volt), 0 0 20px rgba(127,211,255,.7); }
 .clock .time small { font-size: .34em; color: var(--volt); margin-left: 4px; vertical-align: .9em; }
 .clock .date { font-weight: 500; font-size: 1rem; color: var(--silver); }
+.love { margin-top: 8px; width: 100%; text-align: center; font-size: .95rem; color: var(--silver); }
+.love .h { color: var(--magenta); text-shadow: 0 0 8px rgba(217,74,146,.6); }
+.love b { font-size: 1.35rem; font-weight: 700; color: #fff; margin: 0 2px; font-variant-numeric: tabular-nums; }
+.love small { display: block; font-size: .75rem; color: var(--mist); margin-top: 2px; }
 .dday { margin-top: 12px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 9px 14px;
   border-radius: 999px; border: 1.5px solid rgba(127,211,255,.55); background: rgba(127,211,255,.08); box-shadow: inset 0 0 14px rgba(127,211,255,.18); }
 .dday strong { font-weight: 700; font-size: 1.35rem; color: var(--volt); font-variant-numeric: tabular-nums; text-shadow: 0 0 8px rgba(127,211,255,.6); }
@@ -78,7 +114,7 @@ body.solo-suits, body.solo-bolt { background: #ffffff; padding-block: 4px; }
 .btn:active { transform: translate(2px,2px); box-shadow: none; }
 
 /* ── 히소카 메모장 ── */
-.memo { background: var(--plum); padding: 22px 12px 12px; }
+.memo { background: linear-gradient(165deg, var(--navy) 0%, var(--navy-deep) 100%); padding: 22px 12px 12px; }
 .memo .card { position: relative; background: var(--paper); color: var(--ink); border-radius: 14px; padding: 20px 14px 14px; box-shadow: inset 0 0 0 2px var(--ink), inset 0 0 0 5px var(--paper), inset 0 0 0 6.5px var(--lilac); }
 .memo .ribbon { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--magenta); color: #fff; font-weight: 700; font-size: .9rem; padding: 4px 16px; border: 2px solid var(--ink); border-radius: 999px; white-space: nowrap; letter-spacing: .04em; }
 .memo .count { text-align: right; font-size: .78rem; color: var(--muted); margin: 0 2px 8px; }
@@ -95,7 +131,7 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
 .memo input { flex: 1; min-width: 0; font-size: .92rem; border: 1.5px solid #cdb9da; border-radius: 999px; padding: 8px 14px; background: #fff; color: var(--ink); }
 
 /* ── 카드 컬렉션 ── */
-.deckw { background: radial-gradient(120% 90% at 15% 0%, #4a2b63 0%, var(--plum-deep) 72%); padding: 18px 16px 16px; }
+.deckw { background: radial-gradient(120% 90% at 15% 0%, #2a3b6b 0%, var(--navy-deep) 72%); padding: 18px 16px 16px; }
 .deckw .top { display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
 .deckw h2 { margin: 0; font-weight: 700; font-size: 1.15rem; color: var(--lilac); }
 .deckw .sub { margin: 2px 0 0; font-size: .8rem; color: #bfb0d0; }
@@ -156,6 +192,84 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
 .qform textarea, .qform input { width: 100%; font: inherit; font-size: .92rem; border-radius: 10px; border: 1.5px solid rgba(127,211,255,.5); background: rgba(0,0,0,.25); color: var(--silver); padding: 8px 10px; resize: vertical; }
 .qform .row { display: flex; gap: 8px; justify-content: flex-end; }
 
+/* ── 공통 패널 ── */
+.panel { background: linear-gradient(165deg, var(--navy) 0%, var(--navy-deep) 100%); padding: 16px; }
+.panel .eye { font-size: .66rem; letter-spacing: .3em; color: var(--mist); }
+.panel h2 { margin: 2px 0 0; font-weight: 700; font-size: 1.1rem; color: #fff; }
+/* 진행 바 */
+.prog { display: grid; gap: 12px; margin-top: 12px; }
+.prog .r { display: grid; gap: 5px; }
+.prog .lab { display: flex; justify-content: space-between; font-size: .82rem; color: var(--silver); }
+.prog .lab b { font-weight: 700; color: var(--volt); font-variant-numeric: tabular-nums; }
+.prog .bar { height: 10px; border-radius: 999px; background: rgba(255,255,255,.08); overflow: hidden; box-shadow: inset 0 0 0 1px rgba(127,211,255,.25); }
+.prog .bar i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #4aa8e8, var(--volt)); box-shadow: 0 0 10px rgba(127,211,255,.7); }
+.prog .bar.p i { background: linear-gradient(90deg, #b03f7c, var(--magenta)); box-shadow: 0 0 10px rgba(217,74,146,.6); }
+/* 넨 타이머 */
+.timer { text-align: center; }
+.timer .modes { display: inline-flex; gap: 4px; margin-top: 10px; padding: 3px; border-radius: 999px; background: rgba(255,255,255,.06); }
+.timer .modes button { border: 0; border-radius: 999px; padding: 5px 12px; font-size: .8rem; background: transparent; color: var(--mist); cursor: pointer; }
+.timer .modes button[aria-pressed="true"] { background: var(--volt); color: var(--ink); font-weight: 700; }
+.timer .ring { position: relative; width: min(190px, 70%); aspect-ratio: 1; margin: 14px auto 6px; max-width: 100%; }
+.timer svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.timer .t { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 2px; }
+.timer .t b { font-size: 2.3rem; font-weight: 700; color: var(--volt-hot); font-variant-numeric: tabular-nums; text-shadow: 0 0 10px rgba(127,211,255,.7); }
+.timer .t span { font-size: .75rem; color: var(--mist); }
+.timer .ctl { display: flex; justify-content: center; gap: 8px; }
+.timer .done { margin-top: 10px; font-size: .82rem; color: var(--silver); }
+.timer .done b { color: var(--magenta); letter-spacing: .1em; }
+/* 시험 D-day */
+.dd .list { display: grid; gap: 8px; margin-top: 12px; }
+.dd .it { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 9px 10px; border-radius: 10px; background: rgba(255,255,255,.05); min-width: 0; }
+.dd .it .n { font-weight: 700; font-size: 1.05rem; color: var(--volt); font-variant-numeric: tabular-nums; min-width: 4.2ch; }
+.dd .it.soon .n { color: var(--magenta); }
+.dd .it .tt { min-width: 0; display: grid; }
+.dd .it .tt span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff; font-size: .92rem; }
+.dd .it .tt span:last-child { font-size: .74rem; color: var(--mist); }
+.dd form { display: grid; grid-template-columns: 1fr auto auto; gap: 6px; margin-top: 10px; }
+.dd input { min-width: 0; border-radius: 10px; border: 1.5px solid rgba(127,211,255,.4); background: rgba(0,0,0,.25); color: var(--silver); padding: 7px 9px; font-size: .85rem; }
+.dd .empty { font-size: .82rem; color: var(--mist); text-align: center; padding: 6px 0; }
+/* 제니 저금통 */
+.piggy .amt { margin-top: 10px; font-size: 1.9rem; font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; }
+.piggy .amt small { font-size: .5em; color: var(--mist); font-weight: 400; margin-left: 4px; }
+.piggy .coins { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; margin: 12px 0 8px; }
+.piggy .coins i { aspect-ratio: 1; max-width: 100%; border-radius: 50%; background: rgba(255,255,255,.07); box-shadow: inset 0 0 0 1px rgba(240,193,75,.25); display: grid; place-items: center; font-style: normal; font-size: .6rem; color: transparent; }
+.piggy .coins i.on { background: radial-gradient(circle at 35% 30%, #ffe08a, var(--gold) 60%, #b8862a); color: #7a5410; box-shadow: 0 0 6px rgba(240,193,75,.6); }
+.piggy .meta { font-size: .8rem; color: var(--mist); display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.piggy form { display: grid; grid-template-columns: 1fr auto auto; gap: 6px; margin-top: 12px; }
+.piggy input { min-width: 0; border-radius: 10px; border: 1.5px solid rgba(240,193,75,.45); background: rgba(0,0,0,.25); color: var(--silver); padding: 7px 9px; font-size: .85rem; }
+.btn.gold { background: var(--gold); color: var(--ink); }
+
+/* ── 헌터 달력 ── */
+.cal { background: linear-gradient(165deg, var(--navy) 0%, var(--navy-deep) 100%); padding: 16px 14px 14px; }
+.cal .head { display: flex; align-items: center; gap: 8px; }
+.cal .head .ttl { margin-right: auto; display: grid; gap: 1px; }
+.cal .eye { font-size: .66rem; letter-spacing: .3em; color: var(--mist); }
+.cal h2 { margin: 0; font-weight: 700; font-size: 1.15rem; color: #fff; letter-spacing: .06em; font-variant-numeric: tabular-nums; }
+.cal .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 12px; }
+.cal .wd { text-align: center; font-size: .7rem; color: var(--mist); padding-bottom: 2px; }
+.cal .wd.sun { color: var(--magenta); }
+.cal .d { position: relative; aspect-ratio: 1 / 1; max-width: 100%; border: 0; border-radius: 8px; background: rgba(255,255,255,.04); color: var(--silver); font-size: .82rem; cursor: pointer; padding: 0; display: grid; place-items: center; font-variant-numeric: tabular-nums; }
+.cal .d.out { color: rgba(231,234,243,.28); background: transparent; }
+.cal .d.sun { color: #f2a6cb; }
+.cal .d.today { background: rgba(127,211,255,.16); color: var(--volt-hot); box-shadow: inset 0 0 0 1.5px var(--volt), 0 0 12px rgba(127,211,255,.55); font-weight: 700; }
+.cal .d .mk { position: absolute; bottom: 1px; left: 0; right: 0; text-align: center; font-size: .55rem; line-height: 1; color: var(--magenta); }
+.cal .d .mk.k { color: var(--volt); }
+.cal .d:hover { background: rgba(127,211,255,.1); }
+.cal .up { margin-top: 12px; display: grid; gap: 6px; }
+.cal .up .row { display: grid; grid-template-columns: 22px 1fr auto; align-items: center; gap: 8px; font-size: .85rem; min-width: 0; padding: 6px 8px; border-radius: 8px; background: rgba(255,255,255,.04); }
+.cal .up .row .s { color: var(--magenta); text-align: center; }
+.cal .up .row .s.k { color: var(--volt); }
+.cal .up .row .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.cal .up .row b { font-weight: 700; color: var(--volt); font-size: .78rem; font-variant-numeric: tabular-nums; }
+.cal .up .empty { font-size: .8rem; color: var(--mist); text-align: center; padding: 4px 0; }
+.cal:has(.sheet) { min-height: 420px; }
+.cal .sheet .box { color: var(--ink); }
+.cal .evs { display: grid; gap: 6px; max-height: 140px; overflow-y: auto; }
+.cal .ev { display: grid; grid-template-columns: 20px 1fr 22px; gap: 6px; align-items: center; font-size: .9rem; }
+.cal .kinds { display: flex; gap: 6px; flex-wrap: wrap; }
+.cal .kinds button { border: 1.5px solid #cdb9da; background: #fff; border-radius: 999px; padding: 4px 10px; font-size: .8rem; cursor: pointer; color: var(--ink); }
+.cal .kinds button[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+
 /* ── 구분선 ── */
 .divider { width: 100%; max-width: 780px; height: 30px; display: block; }
 .shelf .divbox { background: #fff; border-radius: 12px; padding: 6px 12px; box-shadow: 0 0 0 2px var(--ink), 4px 4px 0 var(--ink); }
@@ -174,6 +288,7 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
       <div class="tag">HUNTER TIME</div>
       <div class="time flick"><span data-hm>00:00</span><small data-s>00</small></div>
       <div class="date" data-date></div>
+      <div class="love" data-love></div>
       <div class="dday" data-dbox><strong data-dday>D-0</strong><span data-dlabel>올해 마무리</span><button type="button" data-dedit aria-label="D-day 바꾸기">바꾸기</button></div>
       <form class="dform" data-dform hidden>
         <input id="dday-label" maxlength="16" placeholder="이름 (예: 기말고사)">
@@ -209,6 +324,52 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
       <p class="msg" data-msg></p>
       <div class="stepper">목표 <button class="round" type="button" data-act="goal-" aria-label="목표 줄이기">−</button><b data-goal2>30</b><button class="round" type="button" data-act="goal+" aria-label="목표 늘리기">+</button></div>
     </div>
+  </section>
+</template>
+
+<template id="t-progress">
+  <section class="w panel" aria-label="진행 바">
+    <span class="eye">HUNTER LEVEL</span><h2 data-h></h2>
+    <div class="prog" data-p></div>
+  </section>
+</template>
+<template id="t-timer">
+  <section class="w panel timer" aria-label="넨 수련 타이머">
+    <span class="eye">NEN TRAINING</span><h2>넨 수련 타이머</h2>
+    <div class="modes"><button type="button" data-mode="25" aria-pressed="true">집중 25</button><button type="button" data-mode="50" aria-pressed="false">집중 50</button><button type="button" data-mode="5" aria-pressed="false">휴식 5</button></div>
+    <div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="8"/><circle data-arc cx="60" cy="60" r="52" fill="none" stroke="#7fd3ff" stroke-width="8" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="0" style="filter:drop-shadow(0 0 5px #7fd3ff)"/></svg>
+      <div class="t"><b data-t>25:00</b><span data-s>집중할 준비</span></div></div>
+    <div class="ctl"><button class="btn volt" type="button" data-go>시작</button><button class="btn ghost" type="button" data-reset style="color:var(--silver)">처음으로</button></div>
+    <div class="done">오늘 수련 <b data-n></b></div>
+  </section>
+</template>
+<template id="t-dday">
+  <section class="w panel dd" aria-label="시험 D-day">
+    <span class="eye">HUNTER EXAM</span><h2>시험 D-day</h2>
+    <div class="list" data-l></div>
+    <form data-f><input id="dd-title" maxlength="20" placeholder="시험 이름"><input id="dd-date" type="date"><button class="btn volt" type="submit">추가</button></form>
+  </section>
+</template>
+<template id="t-piggy">
+  <section class="w panel piggy" aria-label="제니 저금통">
+    <span class="eye">JENNY VAULT</span><h2 data-g>제니 저금통</h2>
+    <div class="amt"><span data-a>0</span><small>원 모았어요</small></div>
+    <div class="coins" data-c></div>
+    <div class="meta"><span data-pct></span><span data-left></span></div>
+    <form data-f><input id="piggy-amt" type="number" inputmode="numeric" min="0" step="1000" placeholder="금액"><button class="btn gold" type="submit" data-k="in">넣기</button><button class="btn ghost" type="button" data-k="out" style="color:var(--silver)">빼기</button></form>
+    <form data-gf style="margin-top:6px"><input id="piggy-goal-name" maxlength="16" placeholder="목표 이름 (예: 겨울 여행)"><input id="piggy-goal" type="number" inputmode="numeric" min="1000" step="1000" placeholder="목표 금액"><button class="btn ghost" type="submit" style="color:var(--silver)">목표</button></form>
+  </section>
+</template>
+<template id="t-calendar">
+  <section class="w cal" aria-label="헌터 달력">
+    <div class="head">
+      <div class="ttl"><span class="eye">HUNTER CALENDAR</span><h2 data-m></h2></div>
+      <button class="iconbtn" type="button" data-prev aria-label="이전 달">‹</button>
+      <button class="iconbtn" type="button" data-today aria-label="이번 달로" style="width:auto;padding:0 10px;font-size:.75rem;border-radius:999px">오늘</button>
+      <button class="iconbtn" type="button" data-next aria-label="다음 달">›</button>
+    </div>
+    <div class="grid" data-grid></div>
+    <div class="up" data-up></div>
   </section>
 </template>
 
@@ -286,6 +447,11 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
       const left = Math.round((end - today) / 86400000);
       dd.textContent = left === 0 ? "D-DAY" : left > 0 ? "D-" + left : "D+" + (-left);
       dl.textContent = label;
+      const LOVE = [2026, 6, 17];
+      const together = Math.floor((today - new Date(...LOVE)) / 86400000) + 1;
+      const nextHundred = Math.ceil((together + 1) / 100) * 100;
+      const lv = root.querySelector("[data-love]");
+      if (together >= 1) lv.innerHTML = `<span class="h">♥</span> 우리 <b>${together}</b>일째 <span class="h">♥</span><small>${together % 100 === 0 ? together + "일 축하해!" : nextHundred + "일까지 " + (nextHundred - together) + "일"}</small>`;
     }
     tick(); setInterval(tick, 1000);
     $("[data-dedit]").onclick = () => {
@@ -478,21 +644,255 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
     render();
   }
 
-  const MOUNT = { clock: mountClock, memo: mountMemo, deck: mountDeck, quote: mountQuote };
+  /* 진행 바 */
+  function mountProgress(root) {
+    function render() {
+      const n = new Date(), y = n.getFullYear();
+      const ys = new Date(y, 0, 1), ye = new Date(y + 1, 0, 1), ms = new Date(y, n.getMonth(), 1), me = new Date(y, n.getMonth() + 1, 1), ds = new Date(y, n.getMonth(), n.getDate());
+      const pct = (a, b) => Math.min(100, Math.max(0, (n - a) / (b - a) * 100));
+      const rows = [["오늘 하루", pct(ds, new Date(ds.getTime() + 86400000)), ""], ["이번 달", pct(ms, me), ""], [`${y}년`, pct(ys, ye), "p"]];
+      root.querySelector("[data-h]").textContent = `${n.getMonth() + 1}월 ${n.getDate()}일 ${DAYS[n.getDay()]}요일`;
+      root.querySelector("[data-p]").innerHTML = rows.map(([l, v, c]) => `<div class="r"><div class="lab"><span>${l}</span><b>${v.toFixed(0)}%</b></div><div class="bar ${c}"><i style="width:${v.toFixed(1)}%"></i></div></div>`).join("");
+    }
+    render(); setInterval(render, 60000);
+  }
+  /* 넨 수련 타이머 */
+  function mountTimer(root) {
+    const $ = s => root.querySelector(s), C = 326.7, KEY = "hxh-nen";
+    let mins = 25, left = mins * 60, timer = null, endAt = 0;
+    const stat = () => { const d = store.get(KEY, {}); return d.day === ymd(new Date()) ? d.n : 0; };
+    function paint() {
+      $("[data-t]").textContent = `${String(Math.floor(left / 60)).padStart(2, "0")}:${String(left % 60).padStart(2, "0")}`;
+      $("[data-arc]").setAttribute("stroke-dashoffset", (C * (1 - left / (mins * 60))).toFixed(1));
+      $("[data-arc]").setAttribute("stroke", mins === 5 ? "#d94a92" : "#7fd3ff");
+      const n = stat(); $("[data-n]").textContent = n ? "♠".repeat(Math.min(n, 8)) + (n > 8 ? ` ×${n}` : "") : "아직 없음";
+    }
+    function stop() { clearInterval(timer); timer = null; $("[data-go]").textContent = "시작"; }
+    function tick() {
+      left = Math.max(0, Math.round((endAt - Date.now()) / 1000));
+      if (left === 0) { stop(); if (mins !== 5) { store.set(KEY, { day: ymd(new Date()), n: stat() + 1 }); } $("[data-s]").textContent = mins === 5 ? "휴식 끝! 다시 수련" : "수련 완료 ♠"; left = mins * 60; }
+      paint();
+    }
+    $("[data-go]").onclick = () => {
+      if (timer) { stop(); $("[data-s]").textContent = "잠깐 멈춤"; return; }
+      endAt = Date.now() + left * 1000; timer = setInterval(tick, 250); $("[data-go]").textContent = "멈춤"; $("[data-s]").textContent = mins === 5 ? "쉬는 중" : "집중하는 중";
+    };
+    $("[data-reset]").onclick = () => { stop(); left = mins * 60; $("[data-s]").textContent = "집중할 준비"; paint(); };
+    root.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => {
+      stop(); mins = +b.dataset.mode; left = mins * 60;
+      root.querySelectorAll("[data-mode]").forEach(x => x.setAttribute("aria-pressed", x === b));
+      $("[data-s]").textContent = mins === 5 ? "쉴 준비" : "집중할 준비"; paint();
+    });
+    paint();
+  }
+  /* 시험 D-day */
+  function mountDday(root) {
+    const KEY = "hxh-exams"; let ex = store.get(KEY, []);
+    const l = root.querySelector("[data-l]");
+    function render() {
+      const t = new Date(); const today = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+      const items = ex.map((e, i) => { const [y, m, d] = e.d.split("-").map(Number); return { ...e, i, diff: Math.round((new Date(y, m - 1, d) - today) / 86400000), m, dd: d }; })
+        .filter(e => e.diff >= -1).sort((a, b) => a.diff - b.diff);
+      l.innerHTML = items.length ? "" : '<div class="empty">시험 이름과 날짜를 넣어 보세요</div>';
+      items.forEach(e => {
+        const r = document.createElement("div"); r.className = "it" + (e.diff <= 7 ? " soon" : "");
+        r.innerHTML = `<span class="n"></span><span class="tt"><span></span><span></span></span><button class="x" type="button" aria-label="지우기">×</button>`;
+        r.querySelector(".n").textContent = e.diff === 0 ? "D-DAY" : e.diff < 0 ? "끝!" : "D-" + e.diff;
+        r.querySelector(".tt span:first-child").textContent = e.t; r.querySelector(".tt span:last-child").textContent = `${e.m}월 ${e.dd}일`;
+        r.querySelector(".x").onclick = () => { ex.splice(e.i, 1); store.set(KEY, ex); render(); };
+        l.appendChild(r);
+      });
+    }
+    root.querySelector("[data-f]").onsubmit = ev => {
+      ev.preventDefault(); const t = root.querySelector("#dd-title").value.trim(), d = root.querySelector("#dd-date").value;
+      if (!t || !d) return; ex.push({ t, d }); store.set(KEY, ex); root.querySelector("#dd-title").value = ""; render();
+    };
+    render();
+  }
+  /* 제니 저금통 */
+  function mountPiggy(root) {
+    const $ = s => root.querySelector(s), KEY = "hxh-piggy";
+    let st = store.get(KEY, { name: "제니 저금통", goal: 300000, have: 0 });
+    const won = n => n.toLocaleString("ko-KR");
+    function render() {
+      const p = st.goal ? Math.min(1, st.have / st.goal) : 0;
+      $("[data-g]").textContent = st.name || "제니 저금통";
+      $("[data-a]").textContent = won(st.have);
+      $("[data-c]").innerHTML = Array.from({ length: 20 }, (_, i) => `<i class="${i < Math.round(p * 20) ? "on" : ""}">J</i>`).join("");
+      $("[data-pct]").textContent = `목표 ${won(st.goal)}원의 ${Math.round(p * 100)}%`;
+      $("[data-left]").textContent = st.have >= st.goal ? "목표 달성!" : `${won(st.goal - st.have)}원 남음`;
+    }
+    const f = $("[data-f]");
+    f.onsubmit = e => { e.preventDefault(); const v = +$("#piggy-amt").value; if (v > 0) { st.have += v; store.set(KEY, st); $("#piggy-amt").value = ""; render(); } };
+    f.querySelector('[data-k="out"]').onclick = () => { const v = +$("#piggy-amt").value; if (v > 0) { st.have = Math.max(0, st.have - v); store.set(KEY, st); $("#piggy-amt").value = ""; render(); } };
+    $("[data-gf]").onsubmit = e => { e.preventDefault(); const g = +$("#piggy-goal").value, nm = $("#piggy-goal-name").value.trim(); if (g > 0) st.goal = g; if (nm) st.name = nm; store.set(KEY, st); render(); };
+    render();
+  }
+
+  /* 헌터 달력 */
+  const KINDS = [["일정", "♠", "k"], ["약속", "♥", ""], ["시험", "♦", ""], ["마감", "♣", ""]];
+  function mountCalendar(root) {
+    const $ = s => root.querySelector(s), KEY = "hxh-cal";
+    let evs = store.get(KEY, {});
+    const now = new Date(); let y = now.getFullYear(), m = now.getMonth();
+    const MON = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
+    const kindOf = k => KINDS.find(x => x[0] === k) || KINDS[0];
+    function save() { store.set(KEY, evs); }
+    function render() {
+      $("[data-m]").textContent = `${MON[m]} ${y}`;
+      const g = $("[data-grid]"); g.innerHTML = "";
+      ["일","월","화","수","목","금","토"].forEach((w, i) => { const e = document.createElement("div"); e.className = "wd" + (i === 0 ? " sun" : ""); e.textContent = w; g.appendChild(e); });
+      const first = new Date(y, m, 1), start = new Date(y, m, 1 - first.getDay()), todayK = ymd(new Date());
+      for (let i = 0; i < 42; i++) {
+        const d = new Date(start); d.setDate(start.getDate() + i);
+        if (i >= 35 && d.getMonth() !== m) break;
+        const k = ymd(d), list = evs[k] || [];
+        const b = document.createElement("button"); b.type = "button";
+        b.className = "d" + (d.getMonth() !== m ? " out" : "") + (d.getDay() === 0 ? " sun" : "") + (k === todayK ? " today" : "");
+        b.setAttribute("aria-label", `${d.getMonth() + 1}월 ${d.getDate()}일${list.length ? ", 일정 " + list.length + "개" : ""}`);
+        b.innerHTML = `${d.getDate()}${list.length ? `<span class="mk ${kindOf(list[0].kind)[2]}">${list.slice(0, 3).map(e => kindOf(e.kind)[1]).join("")}</span>` : ""}`;
+        b.onclick = () => openDay(k, d);
+        g.appendChild(b);
+      }
+      const up = $("[data-up]"); up.innerHTML = "";
+      const all = Object.entries(evs).filter(([k]) => k >= todayK).sort(([a], [b]) => a < b ? -1 : 1)
+        .flatMap(([k, l]) => l.map(e => ({ k, ...e }))).slice(0, 3);
+      if (!all.length) { up.innerHTML = '<div class="empty">날짜를 누르면 일정을 넣을 수 있어요</div>'; return; }
+      all.forEach(e => {
+        const [yy, mm, dd] = e.k.split("-").map(Number), diff = Math.round((new Date(yy, mm - 1, dd) - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000);
+        const r = document.createElement("div"); r.className = "row";
+        r.innerHTML = `<span class="s"></span><span class="t"></span><b></b>`;
+        const kind = kindOf(e.kind); r.querySelector(".s").textContent = kind[1]; if (kind[2]) r.querySelector(".s").classList.add("k");
+        r.querySelector(".t").textContent = `${mm}/${dd} ${e.t}`;
+        r.querySelector("b").textContent = diff === 0 ? "D-DAY" : "D-" + diff;
+        up.appendChild(r);
+      });
+    }
+    function openDay(k, d) {
+      let kind = "일정";
+      const sh = document.createElement("div"); sh.className = "sheet";
+      sh.innerHTML = `<div class="box" role="dialog" aria-label="일정 넣기"><h3>${d.getMonth() + 1}월 ${d.getDate()}일</h3><div class="evs"></div>
+        <label class="field">일정<input type="text" id="cal-title" maxlength="30" placeholder="예: 자료구조 퀴즈"></label>
+        <div class="kinds">${KINDS.map(x => `<button type="button" data-k="${x[0]}" aria-pressed="${x[0] === kind}">${x[1]} ${x[0]}</button>`).join("")}</div>
+        <div class="acts"><button class="btn ghost" type="button" data-x="close">닫기</button><button class="btn" type="button" data-x="add">넣기</button></div></div>`;
+      const box = sh.querySelector(".evs"), t = sh.querySelector("#cal-title");
+      function list() {
+        box.innerHTML = ""; (evs[k] || []).forEach((e, i) => {
+          const r = document.createElement("div"); r.className = "ev";
+          r.innerHTML = `<span></span><span></span><button class="x" type="button" aria-label="일정 지우기">×</button>`;
+          r.children[0].textContent = kindOf(e.kind)[1]; r.children[1].textContent = e.t;
+          r.children[2].onclick = () => { evs[k].splice(i, 1); if (!evs[k].length) delete evs[k]; save(); list(); render(); };
+          box.appendChild(r);
+        });
+      }
+      list();
+      sh.onclick = e => {
+        const kb = e.target.closest("[data-k]");
+        if (kb) { kind = kb.dataset.k; sh.querySelectorAll("[data-k]").forEach(b => b.setAttribute("aria-pressed", b === kb)); return; }
+        const a = e.target.closest("[data-x]");
+        if (e.target === sh || a?.dataset.x === "close") { sh.remove(); return; }
+        if (a?.dataset.x === "add") { const v = t.value.trim(); if (!v) { t.focus(); return; } (evs[k] = evs[k] || []).push({ t: v, kind }); save(); t.value = ""; list(); render(); }
+      };
+      root.appendChild(sh); t.focus();
+    }
+    $("[data-prev]").onclick = () => { m--; if (m < 0) { m = 11; y--; } render(); };
+    $("[data-next]").onclick = () => { m++; if (m > 11) { m = 0; y++; } render(); };
+    $("[data-today]").onclick = () => { y = now.getFullYear(); m = now.getMonth(); render(); };
+    render();
+  }
+
+  const MOUNT = { clock: mountClock, memo: mountMemo, deck: mountDeck, quote: mountQuote, calendar: mountCalendar, progress: mountProgress, timer: mountTimer, dday: mountDday, piggy: mountPiggy };
   function make(id) {
     const el = document.getElementById("t-" + id).content.cloneNode(true).firstElementChild;
     MOUNT[id](el); return el;
   }
 
+  /* 섹션 배너 */
+  const SECTIONS = {
+    "sec-reading": ["k", "⚡", "NOW READING", "읽는 중", "번개처럼 넘기는 중인 책"],
+    "sec-want":    ["h", "♦", "NEXT CARD", "읽고 싶은 책", "카드 덱에 넣어 둔 다음 책"],
+    "sec-done":    ["h", "♥", "COLLECTED", "다 읽은 책", "카드 컬렉션 완성!"],
+    "sec-shelf":   ["k", "♠", "LIBRARY", "서재", "책을 누르면 그 책의 기록장이 열려요"],
+    "sec-add":     ["h", "♣", "NEW BOOK", "책 추가", "서재 위 「책 추가」 탭에서 제목·저자·표지를 넣어요"],
+    "sec-stats":   ["k", "⚡", "REPORT", "통계", "다 읽은 책을 자동으로 세어 줘요"],
+    "sec-notes":   ["h", "♥", "NOTES", "독서노트", "밑줄·인용·감상을 책과 연결해서 모아요"]
+  };
+  function band(key) {
+    const [tone, mark, eye, title, cap] = SECTIONS[key];
+    const el = document.createElement("section"); el.className = "band " + tone; el.setAttribute("aria-label", title);
+    el.innerHTML = `<span class="mark" aria-hidden="true">${mark}</span><div class="txt"><span class="eye">${eye}</span><h2>${title}</h2><p>${cap}</p></div><span class="deco" aria-hidden="true">${mark}</span>`;
+    return el;
+  }
+
+  /* 타이틀 배너: 밤 숲, 흩날리는 카드, 번개 */
+  function hero(title, sub) {
+    const el = document.createElement("section"); el.className = "hero"; el.setAttribute("aria-label", title);
+    el.innerHTML = `<canvas></canvas><div class="t"><div class="suits">♠ <b>♥</b> <b>♦</b> ♣</div><h1>${title}</h1><div class="sub">${sub}</div></div>`;
+    const cv = el.querySelector("canvas"), g = cv.getContext("2d");
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let W = 0, H = 0, d = 1, stars = [], trees = [], cards = [], flash = 0;
+    function setup() {
+      const r = el.getBoundingClientRect(); d = devicePixelRatio || 1; W = cv.width = Math.max(1, r.width * d); H = cv.height = Math.max(1, r.height * d);
+      stars = Array.from({ length: 60 }, () => [Math.random() * W, Math.random() * H * .55, Math.random() * 1.3 * d + .3]);
+      trees = [];
+      for (let layer = 0; layer < 2; layer++) for (let x = -20 * d; x < W + 40 * d; x += (18 + Math.random() * 22) * d)
+        trees.push([layer, x, (layer ? 46 : 70) * d + Math.random() * 30 * d, (layer ? 14 : 20) * d + Math.random() * 10 * d]);
+      cards = Array.from({ length: 11 }, (_, i) => newCard(true, i));
+    }
+    function newCard(init, i) {
+      return { x: Math.random() * W, y: init ? Math.random() * H : -30 * d, s: (10 + Math.random() * 9) * d, r: Math.random() * 6.28,
+        vr: (Math.random() - .5) * .03, vy: (.25 + Math.random() * .45) * d, vx: (Math.random() - .3) * .25 * d, pink: (i ?? Math.random() * 4) % 2 < 1 };
+    }
+    function drawCard(c) {
+      g.save(); g.translate(c.x, c.y); g.rotate(c.r);
+      const w = c.s, h = c.s * 1.4;
+      g.fillStyle = "#fff"; g.strokeStyle = "#17122a"; g.lineWidth = 1 * d;
+      g.fillRect(-w / 2, -h / 2, w, h); g.strokeRect(-w / 2, -h / 2, w, h);
+      g.fillStyle = c.pink ? "#c2559c" : "#8f5bb5"; g.fillRect(-w / 2 + 1.5 * d, -h / 2 + 1.5 * d, w - 3 * d, h - 3 * d);
+      g.fillStyle = "rgba(241,201,226,.9)";
+      for (let yy = -h / 2 + 3 * d; yy < h / 2 - 2 * d; yy += 4 * d) for (let xx = -w / 2 + 3 * d + ((yy / (4 * d)) % 2 ? 2 * d : 0); xx < w / 2 - 2 * d; xx += 4 * d) g.fillRect(xx, yy, 1.4 * d, 1.4 * d);
+      g.restore();
+    }
+    function bolt(x0, y0, len) {
+      g.beginPath(); g.moveTo(x0, y0); let x = x0, y = y0;
+      for (let i = 0; i < 7; i++) { x += (Math.random() - .5) * len * .45; y += len / 7; g.lineTo(x, y); }
+      g.stroke();
+    }
+    function frame() {
+      g.clearRect(0, 0, W, H);
+      g.fillStyle = "rgba(234,248,255,.75)"; stars.forEach(s => { g.fillRect(s[0], s[1], s[2], s[2]); });
+      g.beginPath(); g.arc(W * .82, H * .26, 16 * d, 0, 6.28); g.fillStyle = "rgba(233,196,222,.85)"; g.fill();
+      g.beginPath(); g.arc(W * .82 + 6 * d, H * .26 - 4 * d, 14 * d, 0, 6.28); g.fillStyle = "#24163a"; g.fill();
+      if (flash > 0) {
+        g.strokeStyle = `rgba(127,211,255,${.25 + flash * .5})`; g.shadowColor = "#7fd3ff"; g.shadowBlur = 14 * d; g.lineWidth = 2 * d; g.lineJoin = "round";
+        bolt(W * .12, 0, H * .55); bolt(W * .9, 0, H * .45); g.shadowBlur = 0; flash -= .06;
+      }
+      cards.forEach((c, i) => { drawCard(c); c.y += c.vy; c.x += c.vx; c.r += c.vr; if (c.y > H + 30 * d) cards[i] = newCard(false); });
+      trees.forEach(([l, x, h, w]) => {
+        g.fillStyle = l ? "#1a2443" : "#0f0b1d";
+        g.beginPath(); g.moveTo(x - w, H); g.lineTo(x, H - h); g.lineTo(x + w, H); g.fill();
+      });
+      if (!still) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(() => { setup(); frame(); });
+    addEventListener("resize", () => { setup(); if (still) frame(); });
+    if (!still) setInterval(() => { if (Math.random() > .45) flash = 1; }, 2600);
+    return el;
+  }
+
   const app = document.getElementById("app");
   function route() {
     let h = location.hash.slice(1); if (h === "goal") h = "deck";
-    app.innerHTML = ""; document.body.className = "";
-    if (MOUNT[h]) { document.body.className = "solo solo-" + h; app.appendChild(make(h)); return; }
-    if (h === "suits" || h === "bolt") { document.body.className = "solo solo-" + h; app.appendChild(h === "suits" ? suitsDivider() : boltDivider()); return; }
+    app.innerHTML = ""; document.body.className = ""; document.documentElement.className = "";
+    const solo = cls => { document.body.className = "solo " + cls; document.documentElement.className = "solo-html"; };
+    if (MOUNT[h]) { solo("solo-" + h); app.appendChild(make(h)); return; }
+    if (h === "suits" || h === "bolt") { solo("solo-" + h); app.appendChild(h === "suits" ? suitsDivider() : boltDivider()); return; }
+    if (h === "hero") { solo("solo-hero"); app.appendChild(hero("HUNTER'S ROOM", "명주의 하루")); return; }
+    if (h === "hero-library") { solo("solo-hero"); app.appendChild(hero("HUNTER'S LIBRARY", "명주의 독서기록장")); return; }
+    if (h === "hero-study") { solo("solo-hero"); app.appendChild(hero("HUNTER EXAM", "명주의 공부방")); return; }
+    if (SECTIONS[h]) { solo("solo-band"); app.appendChild(band(h)); return; }
     const shelf = document.createElement("div"); shelf.className = "shelf";
-    shelf.innerHTML = `<header class="shelf-head"><h1>헌터 서재 위젯</h1>
-      <p>노션 독서기록장에 붙이는 위젯이에요. 위젯 하나만 띄우려면 링크 끝에 꼬리표를 붙여서 노션에 임베드해요. 꼬리표를 누르면 복사돼요.</p></header>`;
+    shelf.innerHTML = `<header class="shelf-head"><p>노션 독서기록장에 붙이는 위젯이에요. 위젯 하나만 띄우려면 주소 끝에 꼬리표를 붙여서 노션에 임베드해요. 꼬리표를 누르면 복사돼요.</p></header>`;
     function slot(name, hash, el) {
       const s = document.createElement("div"); s.className = "slot";
       s.innerHTML = `<div class="slot-label"><b>${name}</b><button class="hash" type="button">#${hash}</button></div>`;
@@ -502,8 +902,14 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
       };
       s.appendChild(el); return s;
     }
+    shelf.append(slot("타이틀 배너", "hero", hero("HUNTER'S ROOM", "명주의 하루")));
+    const bands = document.createElement("div"); bands.className = "slot";
+    bands.innerHTML = `<div class="slot-label"><b>섹션 배너</b><span>${Object.keys(SECTIONS).map(k => "#" + k).join(" · ")}</span></div>`;
+    const bl = document.createElement("div"); bl.style.cssText = "display:grid;gap:12px";
+    Object.keys(SECTIONS).forEach(k => bl.appendChild(band(k)));
+    bands.appendChild(bl); shelf.appendChild(bands);
     const two = document.createElement("div"); two.className = "two";
-    two.append(slot("키르아 시계", "clock", make("clock")), slot("히소카 메모장", "memo", make("memo")));
+    two.append(slot("키르아 시계", "clock", make("clock")), slot("히소카 메모장", "memo", make("memo")), slot("헌터 달력", "calendar", make("calendar")), slot("헌터 레벨 (진행 바)", "progress", make("progress")), slot("넨 수련 타이머", "timer", make("timer")), slot("시험 D-day", "dday", make("dday")), slot("제니 저금통", "piggy", make("piggy")));
     shelf.append(two, slot("올해 카드 컬렉션", "deck", make("deck")), slot("오늘의 문장", "quote", make("quote")));
     const d1 = document.createElement("div"); d1.className = "divbox"; d1.appendChild(suitsDivider());
     const d2 = document.createElement("div"); d2.className = "divbox"; d2.appendChild(boltDivider());
