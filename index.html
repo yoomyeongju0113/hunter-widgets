@@ -341,7 +341,6 @@ body.solo-hero .hero h1 { font-size: clamp(2rem, 8.4vw, 6.5rem); letter-spacing:
       <div class="tag">HUNTER TIME</div>
       <div class="time flick"><span data-hm>00:00</span><small data-s>00</small></div>
       <div class="date" data-date></div>
-      <div class="love" data-love></div>
       <div class="dday" data-dbox><strong data-dday>D-0</strong><span data-dlabel>올해 마무리</span><button type="button" data-dedit aria-label="D-day 바꾸기">바꾸기</button></div>
       <form class="dform" data-dform hidden>
         <input id="dday-label" maxlength="16" placeholder="이름 (예: 기말고사)">
@@ -504,11 +503,6 @@ body.solo-hero .hero h1 { font-size: clamp(2rem, 8.4vw, 6.5rem); letter-spacing:
       const left = Math.round((end - today) / 86400000);
       dd.textContent = left === 0 ? "D-DAY" : left > 0 ? "D-" + left : "D+" + (-left);
       dl.textContent = label;
-      const LOVE = [2026, 6, 17];
-      const together = Math.floor((today - new Date(...LOVE)) / 86400000) + 1;
-      const nextHundred = Math.ceil((together + 1) / 100) * 100;
-      const lv = root.querySelector("[data-love]");
-      if (together >= 1) lv.innerHTML = `<span class="h">♥</span> <b>${together}</b>일 <span class="h">♥</span>`;
     }
     tick(); setInterval(tick, 1000);
     $("[data-dedit]").onclick = () => {
