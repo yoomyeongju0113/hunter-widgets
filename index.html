@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
+<title>헌터 서재 위젯</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap">
+<style>
+/* Layout: 위젯마다 독립된 카드. #clock #memo #deck #quote #suits #bolt 로 하나만 띄우고, # 없으면 전체 진열장 */
+:root {
+  --ink: #17122a;
+  --navy: #1e2b50;
+  --navy-deep: #111830;
+  --volt: #7fd3ff;
+  --volt-hot: #eaf8ff;
+  --silver: #e7eaf3;
+  --mist: #9fb0d6;
+  --plum: #36214a;
+  --plum-deep: #1f1229;
+  --magenta: #d94a92;
+  --lilac: #e9c4de;
+  --paper: #fbf8fc;
+  --muted: #7b6c8c;
+  --gold: #f0c14b;
+  --font: "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; background: var(--plum-deep); color: var(--silver); font-family: var(--font); font-size: 15px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px;
+}
+button, input { font-family: inherit; }
+body.solo { padding-block: 10px; display: grid; place-items: center; }
+body.solo-clock, body.solo-quote { background: var(--navy-deep); }
+body.solo-suits, body.solo-bolt { background: #ffffff; padding-block: 4px; }
+
+.shelf { max-width: 780px; margin: 0 auto; display: grid; gap: 28px; }
+.shelf-head h1 { font-weight: 700; font-size: 1.6rem; margin: 0 0 6px; color: var(--lilac); text-wrap: balance; }
+.shelf-head p { margin: 0; color: #c4b8d4; line-height: 1.65; max-width: 62ch; }
+.slot { display: grid; gap: 10px; }
+.slot-label { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: .85rem; color: #c4b8d4; }
+.slot-label b { font-weight: 700; font-size: 1rem; color: var(--silver); }
+.hash { font-family: ui-monospace, Menlo, monospace; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.18); color: var(--volt); padding: 2px 8px; border-radius: 6px; cursor: pointer; font-size: .8rem; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 28px; align-items: start; }
+
+.w { width: 100%; max-width: 390px; border: 2.5px solid var(--ink); border-radius: 20px; position: relative; overflow: hidden; box-shadow: 4px 4px 0 var(--ink); }
+.solo .w { max-width: 440px; }
+.wide { max-width: 780px; }
+.solo .wide { max-width: 720px; }
+
+/* ── 키르아 시계 ── */
+.clock { background: linear-gradient(165deg, var(--navy) 0%, var(--navy-deep) 100%); padding: 22px 20px 18px; text-align: center; }
+.clock canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.clock .inner { position: relative; display: grid; gap: 4px; justify-items: center; }
+.clock .tag { font-size: .72rem; font-weight: 500; color: var(--mist); letter-spacing: .3em; }
+.clock .time { font-weight: 700; font-size: clamp(3rem, 15vw, 4.1rem); line-height: 1.05; color: var(--volt-hot); font-variant-numeric: tabular-nums; letter-spacing: .02em;
+  text-shadow: 0 0 6px var(--volt), 0 0 20px rgba(127,211,255,.7); }
+.clock .time small { font-size: .34em; color: var(--volt); margin-left: 4px; vertical-align: .9em; }
+.clock .date { font-weight: 500; font-size: 1rem; color: var(--silver); }
+.dday { margin-top: 12px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 9px 14px;
+  border-radius: 999px; border: 1.5px solid rgba(127,211,255,.55); background: rgba(127,211,255,.08); box-shadow: inset 0 0 14px rgba(127,211,255,.18); }
+.dday strong { font-weight: 700; font-size: 1.35rem; color: var(--volt); font-variant-numeric: tabular-nums; text-shadow: 0 0 8px rgba(127,211,255,.6); }
+.dday span { font-size: .9rem; color: var(--silver); }
+.dday button { margin-left: auto; background: none; border: 0; color: var(--mist); cursor: pointer; font-size: .8rem; padding: 2px 4px; }
+.dform { margin-top: 12px; width: 100%; display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+.dform input { min-width: 0; border-radius: 10px; border: 1.5px solid rgba(127,211,255,.5); background: rgba(0,0,0,.25); color: var(--silver); padding: 7px 10px; font-size: .9rem; }
+.dform .row { grid-column: 1 / -1; display: flex; gap: 8px; justify-content: flex-end; }
+
+/* ── 버튼 ── */
+.btn { font-weight: 700; font-size: .9rem; border: 2px solid var(--ink); border-radius: 999px; padding: 6px 16px; background: var(--magenta); color: #fff; cursor: pointer; box-shadow: 2px 2px 0 var(--ink); }
+.btn.ghost { background: transparent; color: inherit; border-color: currentColor; box-shadow: none; }
+.btn.volt { background: var(--volt); color: var(--ink); }
+.btn:active { transform: translate(2px,2px); box-shadow: none; }
+
+/* ── 히소카 메모장 ── */
+.memo { background: var(--plum); padding: 22px 12px 12px; }
+.memo .card { position: relative; background: var(--paper); color: var(--ink); border-radius: 14px; padding: 20px 14px 14px; box-shadow: inset 0 0 0 2px var(--ink), inset 0 0 0 5px var(--paper), inset 0 0 0 6.5px var(--lilac); }
+.memo .ribbon { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--magenta); color: #fff; font-weight: 700; font-size: .9rem; padding: 4px 16px; border: 2px solid var(--ink); border-radius: 999px; white-space: nowrap; letter-spacing: .04em; }
+.memo .count { text-align: right; font-size: .78rem; color: var(--muted); margin: 0 2px 8px; }
+.memo ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.memo li { display: grid; grid-template-columns: 28px 1fr 22px; align-items: center; gap: 8px; padding: 7px 6px 7px 7px; border-radius: 10px; min-width: 0; }
+.memo li + li { border-top: 1px dashed #e2d3ea; border-radius: 0; }
+.memo li.done .txt { text-decoration: line-through; color: #a596b3; }
+.suit-btn { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--ink); background: #fff; font-size: 14px; line-height: 1; cursor: pointer; color: var(--plum); display: grid; place-items: center; padding: 0; }
+li.done .suit-btn { background: var(--magenta); color: #fff; }
+.memo .txt { font-size: .95rem; overflow-wrap: anywhere; min-width: 0; }
+.x { border: 0; background: none; color: #b0a2bd; font-size: 17px; cursor: pointer; padding: 0; }
+.memo .empty { text-align: center; color: var(--muted); padding: 10px 0; font-size: .9rem; }
+.memo form { display: flex; gap: 8px; margin-top: 12px; }
+.memo input { flex: 1; min-width: 0; font-size: .92rem; border: 1.5px solid #cdb9da; border-radius: 999px; padding: 8px 14px; background: #fff; color: var(--ink); }
+
+/* ── 카드 컬렉션 ── */
+.deckw { background: radial-gradient(120% 90% at 15% 0%, #4a2b63 0%, var(--plum-deep) 72%); padding: 18px 16px 16px; }
+.deckw .top { display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+.deckw h2 { margin: 0; font-weight: 700; font-size: 1.15rem; color: var(--lilac); }
+.deckw .sub { margin: 2px 0 0; font-size: .8rem; color: #bfb0d0; }
+.deckw .score { font-weight: 700; font-size: 1.9rem; line-height: 1; color: #fff; font-variant-numeric: tabular-nums; }
+.deckw .score em { font-style: normal; font-size: .5em; color: var(--lilac); font-weight: 500; }
+.deck { display: grid; grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); gap: 9px; margin: 14px 0 12px; }
+.pc { position: relative; aspect-ratio: 5 / 7; max-width: 100%; border: 0; padding: 0; background: none; cursor: pointer; perspective: 600px; }
+.pc .face { position: absolute; inset: 0; border-radius: 6px; overflow: hidden; backface-visibility: hidden; transition: transform .55s cubic-bezier(.3,.7,.3,1); box-shadow: 0 0 0 1.5px var(--ink), 2px 3px 0 var(--ink); }
+/* 히소카 카드 뒷면: 흰 테두리 + 분홍·보라 마름모 체크 */
+.pc .back { background: #fff; padding: 3px; }
+.pc .back i { display: block; width: 100%; height: 100%; border-radius: 3px; overflow: hidden; position: relative; box-shadow: inset 0 0 0 1px #8c3f78; }
+.pc .back i::before { content: ""; position: absolute; inset: -40%; transform: rotate(45deg);
+  background: repeating-conic-gradient(#c2559c 0 25%, #f1c9e2 0 50%) 0 0 / 7px 7px; }
+.pc .front { background: #fff; transform: rotateY(180deg); }
+.pc .front img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pc .front .plain { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 14px 4px; font-size: .62rem; line-height: 1.3; color: var(--ink); overflow: hidden; }
+.pc .front .big { font-size: 1.6rem; line-height: 1; display: block; margin-bottom: 4px; }
+.pc .idx { position: absolute; top: 3px; left: 3px; background: rgba(255,255,255,.94); border-radius: 3px; padding: 1px 3px 2px; font-size: .62rem; font-weight: 700; line-height: 1.05; text-align: center; color: var(--ink); }
+.pc .idx.red { color: var(--magenta); }
+.pc .idx.br { top: auto; left: auto; right: 3px; bottom: 3px; transform: rotate(180deg); }
+.pc.on .back { transform: rotateY(180deg); }
+.pc.on .front { transform: rotateY(0); }
+.pc.next .back { box-shadow: 0 0 0 1.5px var(--ink), 2px 3px 0 var(--ink), 0 0 0 4px rgba(240,193,75,.7); }
+.pc:hover .face, .pc:focus-visible .face { filter: brightness(1.06); }
+.deckw .foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.deckw .msg { margin: 0; font-size: .88rem; color: var(--gold); font-weight: 500; }
+.stepper { display: flex; align-items: center; gap: 8px; font-size: .82rem; color: #d7cbe5; }
+.stepper b { min-width: 2ch; text-align: center; font-variant-numeric: tabular-nums; color: #fff; }
+.round { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--ink); background: var(--lilac); color: var(--ink); font-weight: 700; cursor: pointer; padding: 0; line-height: 1; }
+
+.deckw:has(.sheet) { min-height: 380px; }
+.sheet { position: absolute; inset: 0; background: rgba(23,18,42,.82); display: grid; place-items: center; padding: 14px; z-index: 5; overflow-y: auto; }
+.sheet .box { width: 100%; max-width: 330px; min-width: 0; background: var(--paper); color: var(--ink); border-radius: 16px; padding: 16px; box-shadow: 0 0 0 2px var(--ink), 4px 4px 0 var(--ink); display: grid; gap: 10px; }
+.sheet h3 { margin: 0; font-size: 1rem; }
+.sheet .field { font-size: .8rem; color: var(--muted); display: grid; gap: 4px; min-width: 0; }
+.sheet input[type=text] { width: 100%; min-width: 0; font-size: .95rem; border: 1.5px solid #cdb9da; border-radius: 10px; padding: 8px 10px; color: var(--ink); background: #fff; }
+.pick { display: flex; gap: 12px; align-items: center; min-width: 0; }
+.pick input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.upload { display: inline-block; font-size: .85rem; border: 1.5px solid var(--ink); border-radius: 999px; padding: 6px 14px; cursor: pointer; background: #fff; color: var(--ink); }
+.pick:focus-within .upload { outline: 2px solid var(--gold); outline-offset: 2px; }
+.pick .hint { display: block; font-size: .75rem; color: var(--muted); margin-top: 6px; }
+.pick .thumb { width: 60px; aspect-ratio: 5 / 7; border-radius: 6px; box-shadow: 0 0 0 1.5px var(--ink); background: #f1e6f3 center / cover no-repeat; flex: none; display: grid; place-items: center; font-size: .7rem; color: var(--muted); text-align: center; }
+.sheet .acts { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+.sheet .acts .btn { padding: 6px 14px; }
+.sheet .btn.ghost { color: var(--ink); }
+.sheet .warn { font-size: .78rem; color: var(--magenta); margin: 0; min-height: 1em; }
+
+/* ── 오늘의 문장 ── */
+.quote { background: linear-gradient(165deg, var(--navy) 0%, var(--navy-deep) 100%); padding: 18px 18px 14px; }
+.quote .head { display: flex; justify-content: space-between; align-items: center; font-size: .72rem; letter-spacing: .3em; color: var(--mist); font-weight: 500; }
+.quote blockquote { margin: 10px 0 6px; font-size: 1.08rem; line-height: 1.7; color: var(--silver); text-wrap: pretty; overflow-wrap: anywhere; }
+.quote blockquote::before { content: "“"; display: block; font-size: 2.4rem; line-height: .6; color: var(--volt); text-shadow: 0 0 10px rgba(127,211,255,.6); margin-bottom: 6px; }
+.quote cite { font-style: normal; font-size: .85rem; color: var(--mist); }
+.quote .nav { display: flex; gap: 6px; align-items: center; margin-top: 12px; }
+.quote .nav .n { font-size: .78rem; color: var(--mist); margin-right: auto; font-variant-numeric: tabular-nums; }
+.iconbtn { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid rgba(127,211,255,.5); background: transparent; color: var(--volt); cursor: pointer; font-size: .95rem; padding: 0; }
+.qform { display: grid; gap: 8px; margin-top: 12px; }
+.qform textarea, .qform input { width: 100%; font: inherit; font-size: .92rem; border-radius: 10px; border: 1.5px solid rgba(127,211,255,.5); background: rgba(0,0,0,.25); color: var(--silver); padding: 8px 10px; resize: vertical; }
+.qform .row { display: flex; gap: 8px; justify-content: flex-end; }
+
+/* ── 구분선 ── */
+.divider { width: 100%; max-width: 780px; height: 30px; display: block; }
+.shelf .divbox { background: #fff; border-radius: 12px; padding: 6px 12px; box-shadow: 0 0 0 2px var(--ink), 4px 4px 0 var(--ink); }
+
+@keyframes flicker { 0%, 46%, 54%, 100% { opacity: 1 } 50% { opacity: .6 } }
+.flick { animation: flicker 3.4s infinite; }
+@media (prefers-reduced-motion: reduce) { .flick { animation: none; } .pc .face { transition: none; } }
+</style>
+
+<main id="app"></main>
+
+<template id="t-clock">
+  <section class="w clock" aria-label="키르아 시계">
+    <canvas></canvas>
+    <div class="inner">
+      <div class="tag">HUNTER TIME</div>
+      <div class="time flick"><span data-hm>00:00</span><small data-s>00</small></div>
+      <div class="date" data-date></div>
+      <div class="dday" data-dbox><strong data-dday>D-0</strong><span data-dlabel>올해 마무리</span><button type="button" data-dedit aria-label="D-day 바꾸기">바꾸기</button></div>
+      <form class="dform" data-dform hidden>
+        <input id="dday-label" maxlength="16" placeholder="이름 (예: 기말고사)">
+        <input id="dday-date" type="date">
+        <div class="row"><button class="btn ghost" type="button" data-dcancel>취소</button><button class="btn volt" type="submit">저장</button></div>
+      </form>
+    </div>
+  </section>
+</template>
+
+<template id="t-memo">
+  <section class="w memo" aria-label="히소카 메모장">
+    <div class="card">
+      <div class="ribbon">♠ 오늘 읽을 것 ♥</div>
+      <div class="count" data-count></div>
+      <ul data-list></ul>
+      <form data-form>
+        <input id="memo-input" maxlength="40" placeholder="새 메모…" autocomplete="off">
+        <button class="btn" type="submit">추가</button>
+      </form>
+    </div>
+  </section>
+</template>
+
+<template id="t-deck">
+  <section class="w deckw wide" aria-label="올해 카드 컬렉션">
+    <div class="top">
+      <div><h2>올해 카드 컬렉션</h2><p class="sub">다 읽은 책마다 카드 한 장. 누르면 표지로 뒤집혀요</p></div>
+      <div class="score"><span data-read>0</span><em> / <span data-goal>30</span>권</em></div>
+    </div>
+    <div class="deck" data-deck></div>
+    <div class="foot">
+      <p class="msg" data-msg></p>
+      <div class="stepper">목표 <button class="round" type="button" data-act="goal-" aria-label="목표 줄이기">−</button><b data-goal2>30</b><button class="round" type="button" data-act="goal+" aria-label="목표 늘리기">+</button></div>
+    </div>
+  </section>
+</template>
+
+<template id="t-quote">
+  <section class="w quote" aria-label="오늘의 문장">
+    <div class="head"><span>TODAY'S LINE</span><span data-day></span></div>
+    <blockquote data-q></blockquote>
+    <cite data-c></cite>
+    <div class="nav">
+      <span class="n" data-n></span>
+      <button class="iconbtn" type="button" data-prev aria-label="이전 문장">‹</button>
+      <button class="iconbtn" type="button" data-next aria-label="다음 문장">›</button>
+      <button class="iconbtn" type="button" data-add aria-label="문장 추가">+</button>
+      <button class="iconbtn" type="button" data-del aria-label="이 문장 지우기">×</button>
+    </div>
+    <form class="qform" data-qform hidden>
+      <textarea id="quote-text" rows="3" maxlength="200" placeholder="필사한 문장"></textarea>
+      <input id="quote-book" maxlength="40" placeholder="책 제목 · 쪽수">
+      <div class="row"><button class="btn ghost" type="button" data-qcancel>취소</button><button class="btn volt" type="submit">넣기</button></div>
+    </form>
+  </section>
+</template>
+
+<script>
+(function () {
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+  };
+  const SUITS = ["♠", "♥", "♦", "♣"];
+  const RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+  const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
+  const ymd = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+
+  /* 구분선 */
+  function suitsDivider() {
+    const ns = "http://www.w3.org/2000/svg", svg = document.createElementNS(ns, "svg");
+    svg.setAttribute("viewBox", "0 0 760 30"); svg.setAttribute("class", "divider");
+    svg.setAttribute("role", "img"); svg.setAttribute("aria-label", "카드 문양 구분선");
+    const cols = ["#17122a", "#d94a92", "#d94a92", "#17122a"];
+    let s = "";
+    for (let i = 0; i < 16; i++) {
+      const x = 24 + i * 47;
+      s += `<text x="${x}" y="21" text-anchor="middle" font-size="18" fill="${cols[i % 4]}">${SUITS[i % 4]}</text>`;
+      if (i < 15) s += `<line x1="${x + 13}" y1="15" x2="${x + 34}" y2="15" stroke="#e9c4de" stroke-width="2" stroke-linecap="round"/>`;
+    }
+    svg.innerHTML = s; return svg;
+  }
+  function boltDivider() {
+    const ns = "http://www.w3.org/2000/svg", svg = document.createElementNS(ns, "svg");
+    svg.setAttribute("viewBox", "0 0 760 30"); svg.setAttribute("class", "divider flick"); svg.setAttribute("preserveAspectRatio", "none");
+    svg.setAttribute("role", "img"); svg.setAttribute("aria-label", "번개 구분선");
+    let pts = "0,15"; for (let x = 20, up = true; x <= 760; x += 20, up = !up) pts += ` ${x},${up ? 5 : 25}`;
+    svg.innerHTML = `<defs><filter id="glow" x="-5%" y="-80%" width="110%" height="260%"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <polyline points="${pts}" fill="none" stroke="#5cc4fa" stroke-width="4.5" stroke-linejoin="round" filter="url(#glow)"/>
+      <polyline points="${pts}" fill="none" stroke="#eaf8ff" stroke-width="1.5" stroke-linejoin="round"/>`;
+    return svg;
+  }
+
+  /* 시계 */
+  function mountClock(root) {
+    const $ = s => root.querySelector(s);
+    const hm = $("[data-hm]"), sec = $("[data-s]"), dt = $("[data-date]"), dd = $("[data-dday]"), dl = $("[data-dlabel]");
+    const box = $("[data-dbox]"), form = $("[data-dform]");
+    let target = store.get("hxh-dday", null);
+    function tick() {
+      const n = new Date();
+      hm.textContent = String(n.getHours()).padStart(2, "0") + ":" + String(n.getMinutes()).padStart(2, "0");
+      sec.textContent = String(n.getSeconds()).padStart(2, "0");
+      dt.textContent = `${n.getMonth() + 1}월 ${n.getDate()}일 ${DAYS[n.getDay()]}요일`;
+      const today = new Date(n.getFullYear(), n.getMonth(), n.getDate());
+      let end, label;
+      if (target && target.date) { const [y, m, d] = target.date.split("-").map(Number); end = new Date(y, m - 1, d); label = target.label || "D-day"; }
+      else { end = new Date(n.getFullYear(), 11, 31); label = "올해 마무리"; }
+      const left = Math.round((end - today) / 86400000);
+      dd.textContent = left === 0 ? "D-DAY" : left > 0 ? "D-" + left : "D+" + (-left);
+      dl.textContent = label;
+    }
+    tick(); setInterval(tick, 1000);
+    $("[data-dedit]").onclick = () => {
+      box.hidden = true; form.hidden = false;
+      $("#dday-label").value = target?.label || ""; $("#dday-date").value = target?.date || ymd(new Date(new Date().getFullYear(), 11, 31));
+    };
+    $("[data-dcancel]").onclick = () => { form.hidden = true; box.hidden = false; };
+    form.onsubmit = e => {
+      e.preventDefault(); const date = $("#dday-date").value;
+      target = date ? { label: $("#dday-label").value.trim(), date } : null;
+      store.set("hxh-dday", target); form.hidden = true; box.hidden = false; tick();
+    };
+    const cv = root.querySelector("canvas"), ctx = cv.getContext("2d");
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    function size() { const r = root.getBoundingClientRect(); cv.width = r.width * devicePixelRatio; cv.height = r.height * devicePixelRatio; }
+    function bolt(x0, y0, len, w) {
+      ctx.beginPath(); ctx.moveTo(x0, y0); let x = x0, y = y0;
+      for (let i = 0; i < 6; i++) { x += (Math.random() - .5) * len * .5; y += len / 6; ctx.lineTo(x, y); }
+      ctx.lineWidth = w; ctx.stroke();
+    }
+    function draw() {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      const d = devicePixelRatio, W = cv.width, H = cv.height;
+      ctx.strokeStyle = "rgba(127,211,255,.45)"; ctx.shadowColor = "#7fd3ff"; ctx.shadowBlur = 12 * d; ctx.lineJoin = "round";
+      bolt(W * .08, H * .04, H * .42, 2 * d); bolt(W * .92, H * .06, H * .38, 2 * d);
+      if (Math.random() > .5) bolt(W * (.2 + Math.random() * .6), 0, H * .22, 1.1 * d);
+    }
+    size(); draw();
+    addEventListener("resize", () => { size(); draw(); });
+    if (!still) setInterval(draw, 1500);
+  }
+
+  /* 메모장 */
+  function mountMemo(root) {
+    const KEY = "hxh-memo";
+    let items = store.get(KEY, [
+      { t: "읽는 중인 책 50쪽까지", d: false },
+      { t: "마음에 든 문장 하나 필사하기", d: true },
+      { t: "독서노트에 감상 한 줄 남기기", d: false }
+    ]);
+    const list = root.querySelector("[data-list]"), count = root.querySelector("[data-count]"),
+      form = root.querySelector("[data-form]"), input = root.querySelector("input");
+    function render() {
+      list.innerHTML = "";
+      if (!items.length) list.innerHTML = '<li class="empty" style="display:block">♦ 첫 메모를 적어 보세요 ♣</li>';
+      items.forEach((it, i) => {
+        const li = document.createElement("li"); if (it.d) li.className = "done";
+        const b = document.createElement("button"); b.className = "suit-btn"; b.type = "button";
+        b.textContent = SUITS[i % 4]; b.setAttribute("aria-label", it.d ? "다시 할 일로" : "완료로 표시");
+        b.onclick = () => { it.d = !it.d; save(); };
+        const tx = document.createElement("span"); tx.className = "txt"; tx.textContent = it.t;
+        const x = document.createElement("button"); x.className = "x"; x.type = "button"; x.textContent = "×"; x.setAttribute("aria-label", "메모 지우기");
+        x.onclick = () => { items.splice(i, 1); save(); };
+        li.append(b, tx, x); list.appendChild(li);
+      });
+      count.textContent = items.length ? `남은 메모 ${items.filter(i => !i.d).length} / ${items.length}` : "";
+    }
+    function save() { store.set(KEY, items); render(); }
+    form.addEventListener("submit", e => {
+      e.preventDefault(); const v = input.value.trim(); if (!v) return;
+      if (items.length >= 6) { count.textContent = "메모는 6개까지 적을 수 있어요"; return; }
+      items.push({ t: v, d: false }); input.value = ""; save();
+    });
+    render();
+  }
+
+  /* 표지 이미지 줄이기 */
+  function shrink(file) {
+    return new Promise((res, rej) => {
+      const fr = new FileReader();
+      fr.onerror = rej;
+      fr.onload = () => {
+        const img = new Image();
+        img.onerror = rej;
+        img.onload = () => {
+          const W = 180, H = 252, c = document.createElement("canvas"); c.width = W; c.height = H;
+          const g = c.getContext("2d"), r = Math.max(W / img.width, H / img.height);
+          const w = img.width * r, h = img.height * r;
+          g.drawImage(img, (W - w) / 2, (H - h) / 2, w, h);
+          res(c.toDataURL("image/jpeg", .78));
+        };
+        img.src = fr.result;
+      };
+      fr.readAsDataURL(file);
+    });
+  }
+
+  /* 카드 컬렉션 */
+  function mountDeck(root) {
+    const KEY = "hxh-deck";
+    let st = store.get(KEY, { goal: 30, cards: [] });
+    const deck = root.querySelector("[data-deck]"), msg = root.querySelector("[data-msg]");
+    function idx(i) {
+      const s = SUITS[i % 4], r = RANKS[i % 13], red = (s === "♥" || s === "♦") ? " red" : "";
+      return `<span class="idx${red}">${r}<br>${s}</span><span class="idx br${red}">${r}<br>${s}</span>`;
+    }
+    function render() {
+      root.querySelector("[data-read]").textContent = st.cards.length;
+      root.querySelector("[data-goal]").textContent = st.goal;
+      root.querySelector("[data-goal2]").textContent = st.goal;
+      deck.innerHTML = "";
+      for (let i = 0; i < st.goal; i++) {
+        const card = st.cards[i], b = document.createElement("button");
+        b.type = "button"; b.className = "pc" + (card ? " on" : "") + (i === st.cards.length ? " next" : "");
+        b.setAttribute("aria-label", card ? `${i + 1}번째 책: ${card.title || "제목 없음"}` : (i === st.cards.length ? "다음 카드 뒤집기" : "아직 뒤집지 않은 카드"));
+        const front = card
+          ? (card.cover ? `<img alt="" src="${card.cover}">` : `<span class="plain"><span class="big" style="color:${(SUITS[i % 4] === "♥" || SUITS[i % 4] === "♦") ? "#d94a92" : "#17122a"}">${SUITS[i % 4]}</span>${esc(card.title || "")}</span>`) + idx(i)
+          : "";
+        b.innerHTML = `<span class="face back"><i></i></span><span class="face front">${front}</span>`;
+        b.onclick = () => { if (card) openSheet(i); else if (i === st.cards.length) openSheet(i); else openSheet(st.cards.length); };
+        deck.appendChild(b);
+      }
+      const n = st.cards.length, left = st.goal - n;
+      msg.textContent = n === 0 ? "반짝이는 첫 카드를 눌러 보세요" : left > 0 ? `컬렉션 완성까지 ${left}장` : "카드 컬렉션 완성 ♠♥♦♣";
+    }
+    function esc(s) { return s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+    function save() {
+      if (!store.set(KEY, st)) { msg.textContent = "저장 공간이 꽉 찼어요. 표지 몇 장을 지워 주세요"; return false; }
+      return true;
+    }
+    function openSheet(i) {
+      const old = st.cards[i] || null;
+      let cover = old?.cover || null;
+      const sh = document.createElement("div"); sh.className = "sheet";
+      sh.innerHTML = `<div class="box" role="dialog" aria-label="카드 편집">
+        <h3>${old ? `${i + 1}번째 카드` : "새 카드 뒤집기"}</h3>
+        <label class="field">책 제목<input type="text" id="card-title" maxlength="40" placeholder="다 읽은 책 제목"></label>
+        <div class="pick"><div class="thumb">표지</div><div><label class="upload" for="card-cover">표지 사진 고르기</label><input type="file" id="card-cover" accept="image/*"><span class="hint">사진은 없어도 돼요</span></div></div>
+        <p class="warn"></p>
+        <div class="acts">${old ? '<button class="btn ghost" type="button" data-x="flip">뒤집어 놓기</button>' : ""}<button class="btn ghost" type="button" data-x="cancel">취소</button><button class="btn" type="button" data-x="ok">${old ? "저장" : "뒤집기"}</button></div>
+      </div>`;
+      const t = sh.querySelector("#card-title"), f = sh.querySelector("#card-cover"), th = sh.querySelector(".thumb"), warn = sh.querySelector(".warn");
+      t.value = old?.title || "";
+      const paint = () => { th.style.backgroundImage = cover ? `url(${cover})` : ""; th.textContent = cover ? "" : "표지"; };
+      paint();
+      f.onchange = async () => {
+        if (!f.files[0]) return;
+        warn.textContent = "표지를 준비하는 중…";
+        try { cover = await shrink(f.files[0]); warn.textContent = ""; paint(); } catch (e) { warn.textContent = "이 사진은 열 수 없어요. 다른 사진을 골라 주세요"; }
+      };
+      sh.onclick = e => {
+        const a = e.target.closest("[data-x]");
+        if (e.target === sh || a?.dataset.x === "cancel") { sh.remove(); return; }
+        if (!a) return;
+        if (a.dataset.x === "flip") { st.cards.splice(i, 1); save(); sh.remove(); render(); return; }
+        if (a.dataset.x === "ok") {
+          const card = { title: t.value.trim(), cover };
+          if (old) st.cards[i] = card; else st.cards.push(card);
+          if (st.cards.length > st.goal) st.goal = st.cards.length;
+          if (!save()) { if (!old) st.cards.pop(); else st.cards[i] = old; warn.textContent = "저장 공간이 꽉 찼어요"; return; }
+          sh.remove(); render();
+        }
+      };
+      root.appendChild(sh); t.focus();
+    }
+    root.addEventListener("click", e => {
+      const a = e.target.closest("[data-act]"); if (!a) return;
+      if (a.dataset.act === "goal+") st.goal = Math.min(60, st.goal + 1);
+      if (a.dataset.act === "goal-") st.goal = Math.max(st.cards.length || 1, st.goal - 1);
+      save(); render();
+    });
+    render();
+  }
+
+  /* 오늘의 문장 */
+  function mountQuote(root) {
+    const $ = s => root.querySelector(s), KEY = "hxh-quotes";
+    let qs = store.get(KEY, [{ t: "(예시) 오늘 필사한 문장을 + 버튼으로 넣어 두면, 날마다 한 문장씩 꺼내 보여 줘요.", b: "내 독서노트" }]);
+    const n = new Date(); $("[data-day]").textContent = `${n.getMonth() + 1}.${n.getDate()}`;
+    let cur = qs.length ? Math.floor(new Date(ymd(n)).getTime() / 86400000) % qs.length : 0;
+    const form = $("[data-qform]");
+    function render() {
+      if (!qs.length) { $("[data-q]").textContent = "필사한 문장을 + 로 넣어 보세요."; $("[data-c]").textContent = ""; $("[data-n]").textContent = ""; return; }
+      cur = (cur + qs.length) % qs.length;
+      $("[data-q]").textContent = qs[cur].t;
+      $("[data-c]").textContent = qs[cur].b ? "— " + qs[cur].b : "";
+      $("[data-n]").textContent = `${cur + 1} / ${qs.length}`;
+    }
+    $("[data-prev]").onclick = () => { cur--; render(); };
+    $("[data-next]").onclick = () => { cur++; render(); };
+    $("[data-add]").onclick = () => { form.hidden = !form.hidden; if (!form.hidden) $("#quote-text").focus(); };
+    $("[data-qcancel]").onclick = () => { form.hidden = true; };
+    $("[data-del]").onclick = () => { if (!qs.length) return; qs.splice(cur, 1); store.set(KEY, qs); render(); };
+    form.onsubmit = e => {
+      e.preventDefault(); const t = $("#quote-text").value.trim(); if (!t) return;
+      qs = qs.filter(q => !q.t.startsWith("(예시)"));
+      qs.push({ t, b: $("#quote-book").value.trim() }); cur = qs.length - 1;
+      store.set(KEY, qs); $("#quote-text").value = ""; $("#quote-book").value = ""; form.hidden = true; render();
+    };
+    render();
+  }
+
+  const MOUNT = { clock: mountClock, memo: mountMemo, deck: mountDeck, quote: mountQuote };
+  function make(id) {
+    const el = document.getElementById("t-" + id).content.cloneNode(true).firstElementChild;
+    MOUNT[id](el); return el;
+  }
+
+  const app = document.getElementById("app");
+  function route() {
+    let h = location.hash.slice(1); if (h === "goal") h = "deck";
+    app.innerHTML = ""; document.body.className = "";
+    if (MOUNT[h]) { document.body.className = "solo solo-" + h; app.appendChild(make(h)); return; }
+    if (h === "suits" || h === "bolt") { document.body.className = "solo solo-" + h; app.appendChild(h === "suits" ? suitsDivider() : boltDivider()); return; }
+    const shelf = document.createElement("div"); shelf.className = "shelf";
+    shelf.innerHTML = `<header class="shelf-head"><h1>헌터 서재 위젯</h1>
+      <p>노션 독서기록장에 붙이는 위젯이에요. 위젯 하나만 띄우려면 링크 끝에 꼬리표를 붙여서 노션에 임베드해요. 꼬리표를 누르면 복사돼요.</p></header>`;
+    function slot(name, hash, el) {
+      const s = document.createElement("div"); s.className = "slot";
+      s.innerHTML = `<div class="slot-label"><b>${name}</b><button class="hash" type="button">#${hash}</button></div>`;
+      s.querySelector(".hash").onclick = ev => {
+        const btn = ev.currentTarget, old = btn.textContent;
+        navigator.clipboard.writeText("#" + hash).then(() => { btn.textContent = "복사됨"; setTimeout(() => btn.textContent = old, 1200); }).catch(() => {});
+      };
+      s.appendChild(el); return s;
+    }
+    const two = document.createElement("div"); two.className = "two";
+    two.append(slot("키르아 시계", "clock", make("clock")), slot("히소카 메모장", "memo", make("memo")));
+    shelf.append(two, slot("올해 카드 컬렉션", "deck", make("deck")), slot("오늘의 문장", "quote", make("quote")));
+    const d1 = document.createElement("div"); d1.className = "divbox"; d1.appendChild(suitsDivider());
+    const d2 = document.createElement("div"); d2.className = "divbox"; d2.appendChild(boltDivider());
+    shelf.append(slot("카드 문양 구분선", "suits", d1), slot("번개 구분선", "bolt", d2));
+    app.appendChild(shelf);
+  }
+  addEventListener("hashchange", route);
+  route();
+})();
+</script>
+
+</body></html>
