@@ -218,11 +218,15 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
 .lvl li.done .ck { background: var(--volt); color: var(--ink); }
 .lvl .goals .x { color: var(--mist); }
 .lvl .goals .empty { display: block; text-align: center; color: var(--mist); font-size: .8rem; background: none; }
-.lvl form { display: grid; grid-template-columns: 1fr auto; gap: 6px; margin-top: 10px; }
-.lvl form input { grid-column: 1 / -1; min-width: 0; border-radius: 10px; border: 1.5px solid rgba(127,211,255,.4); background: rgba(0,0,0,.25); color: var(--silver); padding: 7px 9px; font-size: .85rem; }
+.lvl form { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; }
+.lvl form .sz { margin-right: auto; }
+.lvl form input { flex: 1 1 100%; min-width: 0; border-radius: 10px; border: 1.5px solid rgba(127,211,255,.4); background: rgba(0,0,0,.25); color: var(--silver); padding: 7px 9px; font-size: .85rem; }
 .lvl .sz { display: inline-flex; gap: 4px; padding: 3px; border-radius: 999px; background: rgba(255,255,255,.06); }
 .lvl .sz button { border: 0; border-radius: 999px; padding: 4px 10px; font-size: .76rem; background: transparent; color: var(--mist); cursor: pointer; }
 .lvl .sz button[aria-pressed="true"] { background: var(--volt); color: var(--ink); font-weight: 700; }
+.lvl .goals .rp { font-style: normal; color: var(--volt); margin-right: 4px; font-size: .8em; }
+.lvl .daily { border: 1.5px dashed rgba(127,211,255,.5); background: transparent; color: var(--mist); border-radius: 999px; padding: 4px 10px; font-size: .76rem; cursor: pointer; }
+.lvl .daily[aria-pressed="true"] { border-style: solid; background: rgba(127,211,255,.18); color: var(--volt); font-weight: 700; }
 .lvl .lvmsg { margin: 8px 0 0; text-align: center; font-size: .82rem; color: var(--gold); min-height: 1.2em; }
 /* 넨 타이머 */
 .timer { text-align: center; }
@@ -286,6 +290,20 @@ li.done .suit-btn { background: var(--magenta); color: #fff; }
 .cal .sheet .box { color: var(--ink); }
 .cal .evs { display: grid; gap: 6px; max-height: 140px; overflow-y: auto; }
 .cal .ev { display: grid; grid-template-columns: 20px 1fr 22px; gap: 6px; align-items: center; font-size: .9rem; }
+.cal .ev .et { border: 0; background: none; padding: 2px 0; text-align: left; font: inherit; color: var(--ink); cursor: pointer; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cal .ev .et:hover { text-decoration: underline; }
+.cal .evs .hint { font-size: .72rem; color: var(--muted); }
+.cal .dates { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.cal .sheet input[type=date] { width: 100%; min-width: 0; font: inherit; font-size: .85rem; border: 1.5px solid #cdb9da; border-radius: 10px; padding: 6px 8px; color: var(--ink); background: #fff; }
+.cal .reps { display: flex; gap: 6px; flex-wrap: wrap; }
+.cal .reps button { border: 1.5px dashed #cdb9da; background: #fff; border-radius: 999px; padding: 4px 10px; font-size: .8rem; cursor: pointer; color: var(--ink); }
+.cal .reps button[aria-pressed="true"] { border-style: solid; border-color: var(--volt); background: #e6f6ff; }
+.cal .d.rng::before { content: ""; position: absolute; left: 3px; right: 3px; top: 3px; height: 2px; border-radius: 2px; background: var(--magenta); opacity: .85; }
+.cal .d.rng.rk::before { background: var(--volt); }
+.cal .d.hol { color: #f2a6cb; }
+.cal .d.hol.out { color: rgba(242,166,203,.35); }
+.cal .up .row.hol .s, .cal .up .row.hol .t { color: #f2a6cb; }
+.cal .sheet h3 .hn { font-size: .78rem; color: var(--magenta); font-weight: 400; margin-left: 4px; }
 .cal .kinds { display: flex; gap: 6px; flex-wrap: wrap; }
 .cal .kinds button { border: 1.5px solid #cdb9da; background: #fff; border-radius: 999px; padding: 4px 10px; font-size: .8rem; cursor: pointer; color: var(--ink); }
 .cal .kinds button[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
@@ -385,7 +403,7 @@ body.solo-hero .hero h1 { font-size: clamp(2rem, 8.4vw, 6.5rem); letter-spacing:
     <div class="prog"><div class="r"><div class="lab"><span>경험치</span><b data-xp></b></div><div class="bar"><i data-bar style="width:0%"></i></div></div></div>
     <div class="qlab">TODAY'S QUEST</div>
     <ul class="goals" data-list></ul>
-    <form data-f><input id="lv-goal" maxlength="30" placeholder="오늘의 퀘스트 (예: 자료구조 과제 제출)"><div class="sz"><button type="button" data-sz="10" aria-pressed="true">♣ 노멀 · 10XP</button><button type="button" data-sz="30" aria-pressed="false">♠ 보스 · 30XP</button></div><button class="btn volt" type="submit">추가</button></form>
+    <form data-f><input id="lv-goal" maxlength="30" placeholder="오늘의 퀘스트 (예: 자료구조 과제 제출)"><div class="sz"><button type="button" data-sz="10" aria-pressed="true">♣ 노멀 · 10XP</button><button type="button" data-sz="30" aria-pressed="false">♠ 보스 · 30XP</button></div><button type="button" class="daily" data-daily aria-pressed="false">↻ 매일</button><button class="btn volt" type="submit">추가</button></form>
     <p class="lvmsg" data-msg></p>
   </section>
 </template>
@@ -699,7 +717,8 @@ body.solo-hero .hero h1 { font-size: clamp(2rem, 8.4vw, 6.5rem); letter-spacing:
   const HRANKS = [[1, "견습 헌터"], [3, "프로 헌터"], [6, "싱글 스타 헌터 ★"], [10, "더블 스타 헌터 ★★"], [15, "트리플 스타 헌터 ★★★"]];
   function mountProgress(root) {
     const $ = s => root.querySelector(s), KEY = "hxh-level";
-    let st = store.get(KEY, { xp: 0, goals: [] }), size = 10;
+    let st = store.get(KEY, { xp: 0, goals: [] }), size = 10, daily = false;
+    const today = () => ymd(new Date()), isDone = g => g.daily ? g.dd === today() : g.d;
     const rankOf = lv => HRANKS.filter(r => lv >= r[0]).pop()[1];
     function render(flash) {
       const lv = Math.floor(st.xp / 100) + 1, cur = st.xp % 100;
@@ -707,18 +726,20 @@ body.solo-hero .hero h1 { font-size: clamp(2rem, 8.4vw, 6.5rem); letter-spacing:
       $("[data-xp]").textContent = `${cur} / 100 XP`; $("[data-bar]").style.width = cur + "%";
       const ul = $("[data-list]"); ul.innerHTML = "";
       if (!st.goals.length) ul.innerHTML = '<li class="empty">오늘 할 일을 퀘스트로 적고, 끝내면 체크해요</li>';
-      st.goals.forEach((g, i) => {
-        const li = document.createElement("li"); if (g.d) li.className = "done";
-        li.innerHTML = `<button class="ck" type="button" aria-label="${g.d ? "다시 하기로" : "이뤘어요"}">${g.d ? "✓" : ""}</button><span class="tx"></span><span class="xp">${g.x === 30 ? "♠ 30XP" : "♣ 10XP"}</span><button class="x" type="button" aria-label="목표 지우기">×</button>`;
-        li.querySelector(".tx").textContent = g.t;
-        li.querySelector(".ck").onclick = () => { const before = Math.floor(st.xp / 100); g.d = !g.d; st.xp = Math.max(0, st.xp + (g.d ? g.x : -g.x)); store.set(KEY, st); render(g.d && Math.floor(st.xp / 100) > before); };
-        li.querySelector(".x").onclick = () => { st.goals.splice(i, 1); store.set(KEY, st); render(); };
+      st.goals.slice().sort((a, b) => (b.daily ? 1 : 0) - (a.daily ? 1 : 0)).forEach(g => {
+        const dn = isDone(g), li = document.createElement("li"); if (dn) li.className = "done";
+        li.innerHTML = `<button class="ck" type="button" aria-label="${dn ? "다시 하기로" : "이뤘어요"}">${dn ? "✓" : ""}</button><span class="tx">${g.daily ? '<i class="rp">↻</i>' : ""}<span></span></span><span class="xp">${g.x === 30 ? "♠ 30XP" : "♣ 10XP"}</span><button class="x" type="button" aria-label="목표 지우기">×</button>`;
+        li.querySelector(".tx span").textContent = g.t;
+        li.querySelector(".ck").onclick = () => { const before = Math.floor(st.xp / 100), nd = !isDone(g); if (g.daily) g.dd = nd ? today() : ""; else g.d = nd; st.xp = Math.max(0, st.xp + (nd ? g.x : -g.x)); store.set(KEY, st); render(nd && Math.floor(st.xp / 100) > before); };
+        li.querySelector(".x").setAttribute("aria-label", g.daily ? "매일 퀘스트 그만하기" : "목표 지우기");
+        li.querySelector(".x").onclick = () => { st.goals = st.goals.filter(x => x !== g); store.set(KEY, st); render(); };
         ul.appendChild(li);
       });
       $("[data-msg]").textContent = flash ? `레벨 업! Lv.${lv} ${rankOf(lv)}` : `다음 레벨까지 ${100 - cur} XP`;
     }
+    $("[data-daily]").onclick = e => { daily = !daily; e.currentTarget.setAttribute("aria-pressed", daily); };
     root.querySelectorAll("[data-sz]").forEach(b => b.onclick = () => { size = +b.dataset.sz; root.querySelectorAll("[data-sz]").forEach(x => x.setAttribute("aria-pressed", x === b)); });
-    $("[data-f]").onsubmit = e => { e.preventDefault(); const v = $("#lv-goal").value.trim(); if (!v) return; if (st.goals.length >= 8) st.goals = st.goals.filter(g => !g.d); st.goals.push({ t: v, x: size, d: false }); $("#lv-goal").value = ""; store.set(KEY, st); render(); };
+    $("[data-f]").onsubmit = e => { e.preventDefault(); const v = $("#lv-goal").value.trim(); if (!v) return; if (st.goals.length >= 10) st.goals = st.goals.filter(g => g.daily || !g.d); st.goals.push(daily ? { t: v, x: size, daily: true, dd: "" } : { t: v, x: size, d: false }); $("#lv-goal").value = ""; daily = false; $("[data-daily]").setAttribute("aria-pressed", "false"); store.set(KEY, st); render(); };
     render();
   }
   /* 넨 수련 타이머 */
@@ -795,14 +816,43 @@ body.solo-hero .hero h1 { font-size: clamp(2rem, 8.4vw, 6.5rem); letter-spacing:
   }
 
   /* 헌터 달력 */
+  /* 공휴일 (2026–2027) */
+  const HOLI = {"2026-01-01": "신정", "2026-02-16": "설날 연휴", "2026-02-17": "설날", "2026-02-18": "설날 연휴", "2026-03-01": "삼일절", "2026-03-02": "대체공휴일", "2026-05-01": "근로자의 날", "2026-05-05": "어린이날", "2026-05-24": "부처님오신날", "2026-05-25": "대체공휴일", "2026-06-03": "지방선거", "2026-06-06": "현충일", "2026-07-17": "제헌절", "2026-08-15": "광복절", "2026-08-17": "대체공휴일", "2026-09-24": "추석 연휴", "2026-09-25": "추석", "2026-09-26": "추석 연휴", "2026-10-03": "개천절", "2026-10-05": "대체공휴일", "2026-10-09": "한글날", "2026-12-25": "크리스마스", "2027-01-01": "신정", "2027-02-06": "설날 연휴", "2027-02-07": "설날", "2027-02-08": "설날 연휴", "2027-02-09": "대체공휴일", "2027-03-01": "삼일절", "2027-05-01": "노동절", "2027-05-03": "대체공휴일", "2027-05-05": "어린이날", "2027-05-13": "부처님오신날", "2027-06-06": "현충일", "2027-07-17": "제헌절", "2027-07-19": "대체공휴일", "2027-08-15": "광복절", "2027-08-16": "대체공휴일", "2027-09-14": "추석 연휴", "2027-09-15": "추석", "2027-09-16": "추석 연휴", "2027-10-03": "개천절", "2027-10-04": "대체공휴일", "2027-10-09": "한글날", "2027-10-11": "대체공휴일", "2027-12-25": "크리스마스", "2027-12-27": "대체공휴일"};
   const KINDS = [["가족", "♥", ""], ["학교", "♠", "k"], ["공부", "♦", "k"], ["여가", "♣", ""]];
   function mountCalendar(root) {
-    const $ = s => root.querySelector(s), KEY = "hxh-cal";
-    let evs = store.get(KEY, {});
+    const $ = s => root.querySelector(s), KEY = "hxh-cal2";
+    /* 일정 한 개: { id, t, kind, s: 시작, e: 끝, rep: "" | "week", ex: [빼는 날] } */
+    let list = store.get(KEY, null);
+    if (!Array.isArray(list)) {
+      const old = store.get("hxh-cal", {}); list = [];
+      Object.entries(old).forEach(([k, l]) => (l || []).forEach(e => list.push({ id: uid(), t: e.t, kind: e.kind, s: k, e: k, rep: "", ex: [] })));
+      store.set(KEY, list);
+    }
+    function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+    const dn = k => { const [a, b, c] = k.split("-").map(Number); return Math.round(Date.UTC(a, b - 1, c) / 86400000); };
+    const kd = n => { const d = new Date(n * 86400000); return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`; };
+    const md = k => { const [, b, c] = k.split("-").map(Number); return `${b}/${c}`; };
+    function occurs(ev, k) {
+      const n = dn(k), S = dn(ev.s), L = Math.max(0, dn(ev.e) - S);
+      if (n < S || (ev.ex || []).includes(k)) return false;
+      if (ev.rep === "day") return true;
+      return ev.rep === "week" ? (n - S) % 7 <= L : n <= S + L;
+    }
+    function nextStart(ev, T) {
+      const S = dn(ev.s), L = Math.max(0, dn(ev.e) - S);
+      if (ev.rep === "day") { for (let n = Math.max(S, T), i = 0; i < 400; i++, n++) if (!(ev.ex || []).includes(kd(n))) return n; return null; }
+      if (ev.rep !== "week") return S + L >= T ? S : null;
+      for (let st = S + 7 * Math.max(0, Math.ceil((T - L - S) / 7)), i = 0; i < 60; i++, st += 7) {
+        let ok = false; for (let j = 0; j <= L; j++) if (st + j >= T && !(ev.ex || []).includes(kd(st + j))) ok = true;
+        if (ok) return st;
+      }
+      return null;
+    }
+    const on = k => list.filter(ev => occurs(ev, k));
     const now = new Date(); let y = now.getFullYear(), m = now.getMonth();
     const MON = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
     const kindOf = k => KINDS.find(x => x[0] === k) || KINDS[0];
-    function save() { store.set(KEY, evs); }
+    function save() { store.set(KEY, list); }
     function render() {
       $("[data-m]").textContent = `${MON[m]} ${y}`;
       const g = $("[data-grid]"); g.innerHTML = "";
@@ -811,52 +861,84 @@ body.solo-hero .hero h1 { font-size: clamp(2rem, 8.4vw, 6.5rem); letter-spacing:
       for (let i = 0; i < 42; i++) {
         const d = new Date(start); d.setDate(start.getDate() + i);
         if (i >= 35 && d.getMonth() !== m) break;
-        const k = ymd(d), list = evs[k] || [];
+        const k = ymd(d), day = on(k).filter(ev => ev.rep !== "day"), rng = day.find(ev => ev.e > ev.s);
         const b = document.createElement("button"); b.type = "button";
-        b.className = "d" + (d.getMonth() !== m ? " out" : "") + (d.getDay() === 0 ? " sun" : "") + (k === todayK ? " today" : "");
-        b.setAttribute("aria-label", `${d.getMonth() + 1}월 ${d.getDate()}일${list.length ? ", 일정 " + list.length + "개" : ""}`);
-        b.innerHTML = `${d.getDate()}${list.length ? `<span class="mk ${kindOf(list[0].kind)[2]}">${list.slice(0, 3).map(e => kindOf(e.kind)[1]).join("")}</span>` : ""}`;
+        b.className = "d" + (d.getMonth() !== m ? " out" : "") + (d.getDay() === 0 ? " sun" : "") + (k === todayK ? " today" : "") + (HOLI[k] ? " hol" : "") + (rng ? " rng" + (kindOf(rng.kind)[2] ? " rk" : "") : "");
+        b.setAttribute("aria-label", `${d.getMonth() + 1}월 ${d.getDate()}일${HOLI[k] ? " " + HOLI[k] : ""}${day.length ? ", 일정 " + day.length + "개" : ""}`); if (HOLI[k]) b.title = HOLI[k];
+        b.innerHTML = `${d.getDate()}${day.length ? `<span class="mk ${kindOf(day[0].kind)[2]}">${day.slice(0, 3).map(e => kindOf(e.kind)[1]).join("")}</span>` : ""}`;
         b.onclick = () => openDay(k, d);
         g.appendChild(b);
       }
       const up = $("[data-up]"); up.innerHTML = "";
-      const all = Object.entries(evs).filter(([k]) => k >= todayK).sort(([a], [b]) => a < b ? -1 : 1)
-        .flatMap(([k, l]) => l.map(e => ({ k, ...e }))).slice(0, 3);
+      const T = dn(todayK);
+      const hol = Object.entries(HOLI).filter(([hk, nm]) => dn(hk) >= T && nm !== "대체공휴일" && !nm.endsWith("연휴")).slice(0, 1).map(([hk, nm]) => ({ ev: { t: nm, kind: "", s: hk, e: hk, rep: "", hol: 1 }, st: dn(hk) }));
+      const all = list.filter(ev => ev.rep !== "day").map(ev => ({ ev, st: nextStart(ev, T) })).filter(x => x.st != null).concat(hol).sort((a, b) => a.st - b.st).slice(0, 3);
       if (!all.length) { up.innerHTML = '<div class="empty">날짜를 누르면 일정을 넣을 수 있어요</div>'; return; }
-      all.forEach(e => {
-        const [yy, mm, dd] = e.k.split("-").map(Number), diff = Math.round((new Date(yy, mm - 1, dd) - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000);
+      all.forEach(({ ev, st }) => {
+        const L = Math.max(0, dn(ev.e) - dn(ev.s)), diff = st - T;
         const r = document.createElement("div"); r.className = "row";
         r.innerHTML = `<span class="s"></span><span class="t"></span><b></b>`;
-        const kind = kindOf(e.kind); r.querySelector(".s").textContent = kind[1]; if (kind[2]) r.querySelector(".s").classList.add("k");
-        r.querySelector(".t").textContent = `${mm}/${dd} ${e.t}`;
-        r.querySelector("b").textContent = diff === 0 ? "D-DAY" : "D-" + diff;
+        const kind = kindOf(ev.kind); r.querySelector(".s").textContent = ev.hol ? "✦" : kind[1]; if (kind[2] && !ev.hol) r.querySelector(".s").classList.add("k"); if (ev.hol) r.classList.add("hol");
+        r.querySelector(".t").textContent = `${md(kd(st))}${L ? "–" + md(kd(st + L)) : ""} ${ev.t}${ev.rep === "day" ? " ↻매일" : ev.rep === "week" ? " ↻" : ""}`;
+        r.querySelector("b").textContent = diff < 0 ? "진행 중" : diff === 0 ? "D-DAY" : "D-" + diff;
         up.appendChild(r);
       });
     }
     function openDay(k, d) {
-      let kind = "학교";
+      let kind = "학교", editing = null;
       const sh = document.createElement("div"); sh.className = "sheet";
-      sh.innerHTML = `<div class="box" role="dialog" aria-label="일정 넣기"><h3>${d.getMonth() + 1}월 ${d.getDate()}일</h3><div class="evs"></div>
-        <label class="field">일정<input type="text" id="cal-title" maxlength="30" placeholder="예: 자료구조 퀴즈, 가족 저녁"></label>
+      sh.innerHTML = `<div class="box" role="dialog" aria-label="일정"><h3>${d.getMonth() + 1}월 ${d.getDate()}일${HOLI[k] ? ` <span class="hn">${HOLI[k]}</span>` : ""}</h3><div class="evs"></div>
+        <label class="field">일정<input type="text" id="cal-title" maxlength="30" placeholder="예: 자료구조 퀴즈, 가족 여행"></label>
+        <div class="dates"><label class="field">시작<input type="date" id="cal-s"></label><label class="field">끝<input type="date" id="cal-e"></label></div>
+        <div class="reps" role="group" aria-label="반복"><button type="button" data-r="" aria-pressed="true">반복 없음</button><button type="button" data-r="day" aria-pressed="false">매일</button><button type="button" data-r="week" aria-pressed="false">매주</button></div>
         <div class="kinds">${KINDS.map(x => `<button type="button" data-k="${x[0]}" aria-pressed="${x[0] === kind}">${x[1]} ${x[0]}</button>`).join("")}</div>
-        <div class="acts"><button class="btn ghost" type="button" data-x="close">닫기</button><button class="btn" type="button" data-x="add">넣기</button></div></div>`;
-      const box = sh.querySelector(".evs"), t = sh.querySelector("#cal-title");
-      function list() {
-        box.innerHTML = ""; (evs[k] || []).forEach((e, i) => {
+        <p class="warn" data-w></p>
+        <div class="acts"><button class="btn ghost" type="button" data-x="del" hidden>지우기</button><button class="btn ghost" type="button" data-x="close">닫기</button><button class="btn" type="button" data-x="add">넣기</button></div></div>`;
+      const box = sh.querySelector(".evs"), t = sh.querySelector("#cal-title"), fs = sh.querySelector("#cal-s"), fe = sh.querySelector("#cal-e"); let rep = "";
+      const addB = sh.querySelector('[data-x="add"]'), delB = sh.querySelector('[data-x="del"]'), warn = sh.querySelector("[data-w]");
+      function setRep(v) { rep = v; sh.querySelectorAll("[data-r]").forEach(b => b.setAttribute("aria-pressed", b.dataset.r === v)); }
+      function setKind(v) { kind = v; sh.querySelectorAll("[data-k]").forEach(b => b.setAttribute("aria-pressed", b.dataset.k === v)); }
+      function reset() { editing = null; t.value = ""; fs.value = k; fe.value = k; setRep(""); setKind("학교"); addB.textContent = "넣기"; delB.hidden = true; warn.textContent = ""; }
+      function edit(ev) {
+        editing = ev; t.value = ev.t; fs.value = ev.s; fe.value = ev.e; setRep(ev.rep || ""); setKind(ev.kind);
+        addB.textContent = "수정"; delB.hidden = false; delB.textContent = ev.rep ? "전부 지우기" : "지우기"; warn.textContent = ""; t.focus();
+      }
+      function draw() {
+        box.innerHTML = ""; on(k).forEach(ev => {
           const r = document.createElement("div"); r.className = "ev";
-          r.innerHTML = `<span></span><span></span><button class="x" type="button" aria-label="일정 지우기">×</button>`;
-          r.children[0].textContent = kindOf(e.kind)[1]; r.children[1].textContent = e.t;
-          r.children[2].onclick = () => { evs[k].splice(i, 1); if (!evs[k].length) delete evs[k]; save(); list(); render(); };
+          const L = Math.max(0, dn(ev.e) - dn(ev.s));
+          r.innerHTML = `<span></span><button class="et" type="button" aria-label="이 일정 고치기"></button><button class="x" type="button" aria-label="${ev.rep ? "이 날만 빼기" : "일정 지우기"}">×</button>`;
+          r.children[0].textContent = kindOf(ev.kind)[1];
+          r.children[1].textContent = ev.t + (L ? ` (${md(ev.s)}–${md(ev.e)})` : "") + (ev.rep ? (ev.rep === "day" ? " ↻매일" : " ↻") : "");
+          r.children[1].onclick = () => edit(ev);
+          r.children[2].onclick = () => {
+            if (ev.rep) (ev.ex = ev.ex || []).push(k); else list = list.filter(x => x !== ev);
+            if (editing === ev) reset(); save(); draw(); render();
+          };
           box.appendChild(r);
         });
+        if (box.children.length) { const h = document.createElement("div"); h.className = "hint"; h.textContent = "일정을 누르면 고칠 수 있어요"; box.appendChild(h); }
       }
-      list();
+      reset(); draw();
       sh.onclick = e => {
         const kb = e.target.closest("[data-k]");
-        if (kb) { kind = kb.dataset.k; sh.querySelectorAll("[data-k]").forEach(b => b.setAttribute("aria-pressed", b === kb)); return; }
+        if (kb) { setKind(kb.dataset.k); return; }
+        const rb = e.target.closest("[data-r]");
+        if (rb) { setRep(rb.dataset.r); if (rb.dataset.r === "day") fe.value = fs.value || k; return; }
         const a = e.target.closest("[data-x]");
         if (e.target === sh || a?.dataset.x === "close") { sh.remove(); return; }
-        if (a?.dataset.x === "add") { const v = t.value.trim(); if (!v) { t.focus(); return; } (evs[k] = evs[k] || []).push({ t: v, kind }); save(); t.value = ""; list(); render(); }
+        if (a?.dataset.x === "del" && editing) { list = list.filter(x => x !== editing); save(); reset(); draw(); render(); return; }
+        if (a?.dataset.x === "add") {
+          const v = t.value.trim(); if (!v) { t.focus(); return; }
+          const s = fs.value || k; let en = fe.value || s;
+          if (en < s) { warn.textContent = "끝 날짜가 시작보다 빨라요"; return; }
+          if (rep === "day") en = s;
+          if (rep === "week" && dn(en) - dn(s) > 6) { warn.textContent = "매주 반복은 7일 안의 일정만 돼요"; return; }
+          const data = { t: v, kind, s, e: en, rep };
+          if (editing) { if (editing.s !== s || editing.rep !== data.rep) editing.ex = []; Object.assign(editing, data); }
+          else list.push({ id: uid(), ex: [], ...data });
+          save(); reset(); draw(); render();
+        }
       };
       root.appendChild(sh); t.focus();
     }
